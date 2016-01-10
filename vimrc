@@ -66,6 +66,7 @@
     " }
 
     " file lets {
+        let g:vimrcDir="~/.vim/rc/"
         let s:vimrcBefore="~/.vim/rc/.vimrc.before"
         let s:vimrcBeforeFork="~/.vim/rc/.vimrc.before.fork"
         let s:vimrcBeforeLocal="~/.vim/rc/.vimrc.before.local"
