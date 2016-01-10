@@ -71,7 +71,7 @@ lnif() {
 dir=~/dotfiles                         # dotfiles directory
 olddir=~/dotfiles_old/$(timestamp)     # old dotfiles backup directory
 # list of files/folders to symlink in homedir
-files="vimrc gitconfig gitignore"
+files="vimrc gitconfig gitignore vim"
 
 ###### 
 
