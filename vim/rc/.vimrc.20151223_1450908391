@@ -1,0 +1,90 @@
+" Turn off compatibility mode for vi and vim.
+set nocompatible
+
+" --- General settings ---
+set backspace=indent,eol,start
+set ruler
+set number
+set showcmd
+set incsearch
+set hlsearch
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+autocmd BufWritePre * :%s/\s\+$//e
+
+syntax on
+
+" windows linux cross vim
+if has('win32') || has('win64')
+    set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/after
+endif
+
+" ---Vundle settings ---
+filetype off                  " required
+let $GIT_SSL_NO_VERIFY = 'true' " keep git from verifing repo
+" set the runtime path to include Vundle and initialize
+set rtp+=~/vimfiles/bundle/Vundle.vim
+call vundle#begin()
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'TaskList.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'bling/vim-airline'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-easytags'
+Plugin 'majutsushi/tagbar'
+Plugin 'kien/ctrlp.vim'
+"Plugin 'vim-scripts/a.vim'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'airblade/vim-rooter'
+Plugin 'docker/docker', {'rtp': '/contrib/syntax/vim/'}
+
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" ctrlP fuzzy search
+set runtimepath^=~/vimfiles/bundle/ctrlp.vim
+" Pathogen
+execute pathogen#infect()
+
+" NerdTree
+cd ~/
+autocmd vimenter * NERDTree . | wincmd p
+let g:nerdtree_tabs_open_on_console_startup=1
+
+set background=dark
+colorscheme solarized
+set laststatus=2
+
+" Airline
+let g:airline_theme='solarized'
+let g:airline_poerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+syntax enable
+
+" Mappings
+nmap <F8> :TagbarToggle<CR>
+nmap <F7> :NERDTreeTabsToggle<CR>
+map ii <ESC>
+
+" Commands
+command! Evimrc :e<space>~\.vimrc " just testing out commands
+
+" Set 80th coloumn color
+if (exists('+colorcolumn'))
+	set colorcolumn=80
+	highlight ColorColumn ctermbg=9
+endif
+
+" if gVim open in full screen
+if has('gui_running')
+       set lines=999 columns=999
+endif

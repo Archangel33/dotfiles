@@ -1,0 +1,10 @@
+" make <leader>/ clear search highlighting instead of toggle
+let g:spf13_clear_search_highlight = 1
+
+" airline custom
+let g:airline_inactive_collapse=1
+let g:airline#extensions#tabline#enabled = 1
+
+"  -- / == to left/right through tabs 
+noremap -- :bp<CR>
+noremap == :bn<CR>
