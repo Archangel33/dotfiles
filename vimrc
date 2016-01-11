@@ -67,28 +67,28 @@
 
     " file lets {
         let g:vimrcDir="~/.vim/rc/"
-        let s:vimrcBefore="~/.vim/rc/.vimrc.before"
-        let s:vimrcBeforeFork="~/.vim/rc/.vimrc.before.fork"
-        let s:vimrcBeforeLocal="~/.vim/rc/.vimrc.before.local"
-        let s:vimrcBundles="~/.vim/rc/.vimrc.bundles"
-        let s:vimrcBundlesFork="~/.vim/rc/.vimrc.bundles.fork"
-        let s:vimrcBundlesLocal="~/.vim/rc/.vimrc.bundles.local"
-        let s:vimrc="~/.vimrc"
-        let s:vimrcFork="~/.vim/rc/.vimrc.fork"
-        let s:vimrcLocal="~/.vim/rc/.vimrc.local"
+        let g:vimrcBefore="~/.vim/rc/.vimrc.before"
+        let g:vimrcBeforeFork="~/.vim/rc/.vimrc.before.fork"
+        let g:vimrcBeforeLocal="~/.vim/rc/.vimrc.before.local"
+        let g:vimrcBundles="~/.vim/rc/.vimrc.bundles"
+        let g:vimrcBundlesFork="~/.vim/rc/.vimrc.bundles.fork"
+        let g:vimrcBundlesLocal="~/.vim/rc/.vimrc.bundles.local"
+        let g:vimrc="~/.vimrc"
+        let g:vimrcFork="~/.vim/rc/.vimrc.fork"
+        let g:vimrcLocal="~/.vim/rc/.vimrc.local"
     " }
 
 " }
 
 " Use before config if available {
-    if filereadable(expand(s:vimrcBefore))
-        execute "source " . s:vimrcBefore
+    if filereadable(expand(g:vimrcBefore))
+        execute "source " . g:vimrcBefore
     endif
 " }
 
 " Use bundles config {
-    if filereadable(expand(s:vimrcBundles))
-        execute "source " . s:vimrcBundles
+    if filereadable(expand(g:vimrcBundles))
+        execute "source " . g:vimrcBundles
     endif
 " }
 
@@ -1199,7 +1199,7 @@
 
     function! s:IsSpf13Fork()
         let s:is_fork = 0
-        let s:fork_files = [s:vimrcFork, s:vimrcBeforeFork, s:vimrcBundlesFork]
+        let s:fork_files = [g:vimrcFork, g:vimrcBeforeFork, g:vimrcBundlesFork]
         for fork_file in s:fork_files
             if filereadable(expand(fork_file, ":p"))
                 let s:is_fork = 1
@@ -1214,24 +1214,24 @@
     endfunction
 
     function! s:EditSpf13Config()
-        call <SID>ExpandFilenameAndExecute("tabedit", s:vimrc)
-        call <SID>ExpandFilenameAndExecute("vsplit", s:vimrcBefore)
-        call <SID>ExpandFilenameAndExecute("vsplit", s:vimrcBundles)
+        call <SID>ExpandFilenameAndExecute("tabedit", g:vimrc)
+        call <SID>ExpandFilenameAndExecute("vsplit", g:vimrcBefore)
+        call <SID>ExpandFilenameAndExecute("vsplit", g:vimrcBundles)
 
         execute bufwinnr(".vimrc") . "wincmd w"
-        call <SID>ExpandFilenameAndExecute("split", s:vimrcLocal)
+        call <SID>ExpandFilenameAndExecute("split", g:vimrcLocal)
         wincmd l
-        call <SID>ExpandFilenameAndExecute("split", s:vimrcBeforeLocal)
+        call <SID>ExpandFilenameAndExecute("split", g:vimrcBeforeLocal)
         wincmd l
-        call <SID>ExpandFilenameAndExecute("split", s:vimrcBundlesLocal)
+        call <SID>ExpandFilenameAndExecute("split", g:vimrcBundlesLocal)
 
         if <SID>IsSpf13Fork()
             execute bufwinnr(".vimrc") . "wincmd w"
-            call <SID>ExpandFilenameAndExecute("split", s:vimrcFork)
+            call <SID>ExpandFilenameAndExecute("split", g:vimrcFork)
             wincmd l
-            call <SID>ExpandFilenameAndExecute("split", s:vimrcBeforeFork)
+            call <SID>ExpandFilenameAndExecute("split", g:vimrcBeforeFork)
             wincmd l
-            call <SID>ExpandFilenameAndExecute("split", s:vimrcBundlesFork)
+            call <SID>ExpandFilenameAndExecute("split", g:vimrcBundlesFork)
         endif
 
         execute bufwinnr(".vimrc.local") . "wincmd w"
@@ -1242,14 +1242,14 @@
 " }
 
 " Use fork vimrc if available {
-    if filereadable(expand(s:vimrcFork))
-        execute "source " . s:vimrcFork
+    if filereadable(expand(g:vimrcFork))
+        execute "source " . g:vimrcFork
     endif
 " }
 
 " Use local vimrc if available {
-    if filereadable(expand(s:vimrcLocal))
-        execute "source " . s:vimrcLocal
+    if filereadable(expand(g:vimrcLocal))
+        execute "source " . g:vimrcLocal
     endif
 " }
 
