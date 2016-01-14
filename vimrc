@@ -73,6 +73,7 @@
         let g:vimrcBundlesLocal="~/.vim/rc/.vimrc.bundles.local"
         let g:vimrc="~/.vimrc"
         let g:vimrcLocal="~/.vim/rc/.vimrc.local"
+        let g:gvimrcLocal="~/.vim/rc/.gvimrc.local"
     " }
 
 " }
@@ -1225,8 +1226,8 @@
 
 " Use local gvimrc if available and gui is running {
     if has('gui_running')
-        if filereadable(expand("~/.gvimrc.local"))
-            source ~/.gvimrc.local
-        endif
+        if filereadable(expand(g:gvimrcLocal))
+            execute "source " . g:gvimrcLocal
+       endif
     endif
 " }
