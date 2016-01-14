@@ -1194,18 +1194,6 @@
     " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
     " }
 
-    function! s:IsSpf13Fork()
-        let s:is_fork = 0
-        let s:fork_files = [g:vimrcFork, g:vimrcBeforeFork, g:vimrcBundlesFork]
-        for fork_file in s:fork_files
-            if filereadable(expand(fork_file, ":p"))
-                let s:is_fork = 1
-                break
-            endif
-        endfor
-        return s:is_fork
-    endfunction
-
     function! s:ExpandFilenameAndExecute(command, file)
         execute a:command . " " . expand(a:file, ":p")
     endfunction
@@ -1222,19 +1210,10 @@
         wincmd l
         call <SID>ExpandFilenameAndExecute("split", g:vimrcBundlesLocal)
 
-        if <SID>IsSpf13Fork()
-            execute bufwinnr(".vimrc") . "wincmd w"
-            call <SID>ExpandFilenameAndExecute("split", g:vimrcFork)
-            wincmd l
-            call <SID>ExpandFilenameAndExecute("split", g:vimrcBeforeFork)
-            wincmd l
-            call <SID>ExpandFilenameAndExecute("split", g:vimrcBundlesFork)
-        endif
-
         execute bufwinnr(".vimrc.local") . "wincmd w"
     endfunction
 
-    execute "noremap " . s:spf13_edit_config_mapping " :call <SID>EditSpf13Config()<CR>"
+    execute "noremap " . s:spf13_edit_config_mapping . " :call <SID>EditSpf13Config()<CR>"
     execute "noremap " . s:spf13_apply_config_mapping . " :source ~/.vimrc<CR>"
 " }
 
