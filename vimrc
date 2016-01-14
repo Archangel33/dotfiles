@@ -1238,12 +1238,6 @@
     execute "noremap " . s:spf13_apply_config_mapping . " :source ~/.vimrc<CR>"
 " }
 
-" Use fork vimrc if available {
-    if filereadable(expand(g:vimrcFork))
-        execute "source " . g:vimrcFork
-    endif
-" }
-
 " Use local vimrc if available {
     if filereadable(expand(g:vimrcLocal))
         execute "source " . g:vimrcLocal
