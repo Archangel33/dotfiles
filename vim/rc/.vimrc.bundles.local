@@ -1,2 +1,2 @@
-
+let g:spf13_bundle_groups=['genral','writing','programming','youcompleteme','python','javascript','scala','haskell','html','misc']
 let g:airline#extensions#tabline#enabled = 1
