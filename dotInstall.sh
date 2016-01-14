@@ -1,7 +1,7 @@
 #!/bin/bash
 ###########
 # dotInstall.sh
-# This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
+# This script creates symlinks from the home directory to any desired dotfiles in ~/.dotfiles
 ###########
 
 ###### Helper func
@@ -68,8 +68,8 @@ lnif() {
 
 ###### Variables
 
-dir=~/dotfiles                         # dotfiles directory
-olddir=~/dotfiles_old/$(timestamp)     # old dotfiles backup directory
+dir=~/.dotfiles                         # dotfiles directory
+olddir=~/.dotfiles_old/$(timestamp)     # old dotfiles backup directory
 # list of files/folders to symlink in homedir
 files="vimrc gitconfig gitignore vim"
 
