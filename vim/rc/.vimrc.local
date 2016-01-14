@@ -22,4 +22,11 @@ hi CommandCursor ctermfg=15 guifg=#fdf6e3 ctermbg=166 guibg=#cb4b16
 nnoremap <leader>o o<ESC>
 nnoremap <leader>O O<ESC>
 
+"  -- / == to left/right through tabs 
+noremap -- :bp<CR>
+noremap == :bn<CR>
+noremap <leader>h <C-w>h
+noremap <leader>j <C-w>j
+noremap <leader>k <C-w>k
+noremap <leader>l <C-w>l
 

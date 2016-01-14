@@ -298,12 +298,6 @@
 
 " }
 
-" Use fork bundles config if available {
-    if filereadable(expand(g:vimrcBundlesFork))
-        execute "source " . g:vimrcBundlesFork
-    endif
-" }
-
 " Use local bundles config if available {
     if filereadable(expand(g:vimrcBundlesLocal))
         execute "source " . g:vimrcBundlesLocal

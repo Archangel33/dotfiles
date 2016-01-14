@@ -68,13 +68,10 @@
     " file lets {
         let g:vimrcDir="~/.vim/rc/"
         let g:vimrcBefore="~/.vim/rc/.vimrc.before"
-        let g:vimrcBeforeFork="~/.vim/rc/.vimrc.before.fork"
         let g:vimrcBeforeLocal="~/.vim/rc/.vimrc.before.local"
         let g:vimrcBundles="~/.vim/rc/.vimrc.bundles"
-        let g:vimrcBundlesFork="~/.vim/rc/.vimrc.bundles.fork"
         let g:vimrcBundlesLocal="~/.vim/rc/.vimrc.bundles.local"
         let g:vimrc="~/.vimrc"
-        let g:vimrcFork="~/.vim/rc/.vimrc.fork"
         let g:vimrcLocal="~/.vim/rc/.vimrc.local"
     " }
 

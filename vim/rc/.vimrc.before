@@ -98,12 +98,6 @@
     
 " }
 
-" Use fork before if available {
-    if filereadable(expand(g:vimrcBeforeFork))
-        execute "source " . g:vimrcBeforeFork
-    endif
-" }
-
 " Use local before if available {
     if filereadable(expand(g:vimrcBeforeLocal))
         execute "source " . g:vimrcBeforeLocal
