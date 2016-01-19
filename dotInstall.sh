@@ -116,7 +116,7 @@ do_backup() {
 create_symlinks(){
     msg "Creating Symlinks"
     for file in $1; do
-        action= "~/$file to $2/$file"
+        action="~/.$file to $2/$file"
         vrb "Symlinking $action"
         lnif "$2/$file" "~/.$file"
         ret="$?"
