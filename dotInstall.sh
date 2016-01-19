@@ -118,7 +118,7 @@ create_symlinks(){
     for file in $1; do
         action= "~/$file to $2/$file"
         vrb "Symlinking $action"
-        lnif $2/$file ~/.$file
+        lnif "$2/$file" "~/.$file"
         ret="$?"
         vrb status_msg "linking $action"
     done
