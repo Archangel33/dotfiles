@@ -1,32 +1,36 @@
 #!/bin/bash
-###########
 # dotInstall.sh
 # This script creates symlinks from the home directory to any desired dotfiles in ~/.dotfiles
 ###########
+set -e           # exit on command errors make sure to handle error codes appropriatly
+set -o pipefail  # catched fial exit codes on piped commands
+# set -x         # turn on bash debugging mode
+
+###### COLORS
+CNORM="\33[0m"
+CRED="\33[31m"
+CGREEN="\33[32m"
+
+
+###### VARS
+[ "$VERBOSE" ] || VERBOSE=
+[ "$DEBUG" ]   || DEBUG=
 
 ###### Helper func
-function timestamp(){
-     date +"%Y%m%d.%H%M%S"
-}
 
-msg() {
-    printf '%b\n' "$1" >&2
-}
+function timestamp(){ date +"%Y%m%d.%H%M%S" }
+
+out() { printf "$(timestamp): $*"; }
+err() { out "$CRED[✘]$$CNORM$*" 1>&2; }
+vrb() { [ ! "$VERBOSE" ] || out "$@"; }
+dbg() { [ ! "$DEBUG" ] || err "$@"; }
+die() { err "EXIT: $1" && [ "$2" ] && [ "$2" -ge 0 ] && exit "$2" || exit 1; } 
+
+msg() {  }
 
 success() {
     if [ "$ret" -eq '0' ]; then
-        msg "\33[32m[✔]\33[0m ${1}${2}"
-    fi
-}
-
-error() {
-    msg "\33[31m[✘]\33[0m ${1}${2}"
-    exit 1
-}
-
-debug() {
-    if [ "$debug_mode" -eq '1' ] && [ "$ret" -gt '1' ]; then
-        msg "An error occurred in function \"${FUNCNAME[$i+1]}\" on line ${BASH_LINENO[$i+1]}, we're sorry for that."
+        msg "$CGREEN[✔]$CNORM ${1}${2}"
     fi
 }
 
@@ -62,19 +66,19 @@ lnif() {
         ln -sf "$1" "$2"
     fi
     ret="$?"
-    debug
 }
 
 
 ###### Variables
 
-dir=~/.dotfiles                         # dotfiles directory
+dir=~/dotfiles                         # dotfiles directory
 olddir=~/.dotfiles_old/$(timestamp)     # old dotfiles backup directory
 # list of files/folders to symlink in homedir
 files="vimrc gitconfig gitignore vim"
 
 ###### 
 
+opts("$@")
 
 
 # create dotfiles_old in homedir
@@ -97,4 +101,41 @@ for file in $files; do
     ln -s $dir/$file ~/.$file
 done
 echo ""
+
+do_backup() {
+    out
+
+}
+
+sync_repo() {
+    local repo_path="$1"
+    local repo_uri="$2"
+    local repo_branch="$3"
+    local repo_name="$4"
+
+    msg "Trying to update $repo_name"
+
+    if [ ! -e "$repo_path" ]; then
+        mkdir -p "$repo_path"
+        git clone -b "$repo_branch" "$repo_uri" "$repo_path"
+        ret="$?"
+        success "Successfully cloned $repo_name."
+    else
+        cd "$repo_path" && git pull origin "$repo_branch"
+        ret="$?"
+        success "Successfully updated $repo_name"
+    fi
+}
+
+################################ MAIN()
+variable_set "$HOME"
+
+do_backup        "$HOME"/.vim \
+
+sync_repo        "" \
+
+create_symlinks  "" \
+
+setup_vundle     "" \
+
 
