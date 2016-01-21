@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # vim: foldlevel=1 spell
 # dotInstall.sh
 # This script creates symlinks from the home directory to any desired dotfiles in ~/.dotfiles
@@ -19,32 +19,20 @@ MCROSS="✘"
 [ "$DEBUG" ]   || DEBUG=
 
 ###### Helper Funcs {{{1
-timestamp(){
-    date +"%Y%m%d.%H%M%S";
-}
-out() {
-    printf "$(timestamp): $*\n";
-}
-err() {
-    out "$CRED[$MCROSS]$CNORM$*" 1>&2;
-}
-vrb() {
-    [ ! "$VERBOSE" ] || out "$@";
-}
-dbg() {
-    [ ! "$DEBUG" ] || err "$@";
-}
-die() {
-    err "EXIT: $1" && [ "$2" ] && [ "$2" -ge 0 ] && exit "$2" || exit 1;
-}
-msg() {
-    out "$*";
-}
+
+timestamp(){ date +"%Y%m%d.%H%M%S"; }
+out() { printf "$(timestamp): $*\n"; }
+err() { out "$CRED[$MCROSS]$CNORM$*" 1>&2; }
+vrb() { [ ! "$VERBOSE" ] || out "$@"; }
+dbg() { [ ! "$DEBUG" ] || err "$@"; }
+die() { err "EXIT: $1" && [ "$2" ] && [ "$2" -ge 0 ] && exit "$2" || exit 1; }
+msg() { out "$*"; }
 status_msg() {
-    if [ "$ret" -eq '0' ]; then
-        msg "$CGREEN[$MCHECK]$CNORM Success: ${1}${2}";
+    local outcmd="$1"; shift
+    if [[ "$ret" -eq '0' ]]; then
+        $outcmd "$CGREEN[$MCHECK]$CNORM Success: $@";
     else
-        err " Failed: ${1}${2}";
+        err "$CRED[$MCROSS]$CNORM Failed: $*";
     fi
     return 0
 }
@@ -74,11 +62,11 @@ variable_set() {
 }
 lnif() {
     if [ -e "$1" ]; then
-        ln -sf "$1" "$2"
+        ln -sfn "$1" "$2"
     fi
     ret="$?"
 }
-dir_must_exist(){
+dir_must_exist() {
     if [ ! -d $1 ]; then
         mkdir -p $1
     fi
@@ -98,29 +86,36 @@ DOTFILES="vimrc gitconfig gitignore vim"                                        
 [ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/vundle"                          # Path to bundles dir for Vundle
 [ -z "$VUNDLE_URI" ]    && VUNDLE_URI="https://github.com/gmarik/vundle.git"              # URI for Vundle plugin for vim
 [ -z "$VUNDLE_branch" ] && VUNDLE_branch="master"                                            # branch from pull vundle frome
-#}
+[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="vim/rc/.vimrc.bundles.local"
+
 
 ###### Install functions {{{1
 do_backup() {
-    msg "Backing up current dotfiles"
-    for file in "$1"; do
-        if [ -e "~/.$file" ]; then
-	    vrb "Moving ~/.$file from $CWD to $2"
-            [ ! -L "~/.$file" ] && mv -v ~/.$file $2
+    msg "Backing up current dotfiles:"
+    vrb $1
+    for file in $1; do
+        if [[ -e ~/.$file ]]; then
+            [[ ! -L ~/.$file ]] && mv -v ~/.$file $2
             ret="$?"
-            vrb status_msg "Moving ~/.$file to $2"
-	fi
+            status_msg vrb "Moving ~/.$file to $2"
+        else
+            err "$file does not exist"
+        fi
     done
+    if [[ ! $ret = "0" ]]; then
+        err "Backup"
+    fi
+    return $ret
 }
 
 create_symlinks(){
     msg "Creating Symlinks"
     for file in $1; do
         action="~/.$file to $2/$file"
-        vrb "Symlinking $action"
-        lnif "$2/$file" "~/.$file"
+        vrb "Symlinking: ln $2/$file $(echo ~/.$file)"
+        lnif $2/$file ~/.$file
         ret="$?"
-        vrb status_msg "linking $action"
+        status_msg vrb "linking $action"
     done
 }
 
@@ -136,20 +131,21 @@ sync_repo() {
         mkdir -p "$repo_path"
         git clone -b "$repo_branch" "$repo_uri" "$repo_path"
         ret="$?"
-        status_msg "Cloning $repo_name."
+        status_msg out "Cloning $repo_name."
     else
         cd "$repo_path" && git pull origin "$repo_branch"
         ret="$?"
-        status_msg "Updating $repo_name"
+        status_msg out "Updating $repo_name"
     fi
 }
 
 setup_vundle() {
+    msg "Attempting to update Vim plugins using Vundle"
     local system_shell="$SHELL"
     export SHELL='/bin/sh'
 
     vim \
-        -u "$1" \
+        -u "$1/$2" \
         "+set nomore" \
         "+BundleInstall!" \
         "+BundleClean" \
@@ -157,13 +153,14 @@ setup_vundle() {
 
     export SHELL="$system_shell"
 
-    status_msg "updating/installing plugins using Vundle"
+    status_msg out "updating/installing plugins using Vundle"
 }
 
 ################################ MAIN(){{{1
 variable_set "$HOME"
 program_must_exist "git"
 program_must_exist "vim"
+program_must_exist "sed"
 dir_must_exist $DOTFILES_backup
 dir_must_exist $DOTFILES_path
 
@@ -181,7 +178,6 @@ sync_repo       "$DOTFILES_path" \
 # setup symlinks
 create_symlinks "$DOTFILES" \
                 "$DOTFILES_path"
-
 
 # Any application specific setup {{{2
 # Vundle {{{3
