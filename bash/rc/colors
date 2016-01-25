@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# ANSI color codes
+# ANSI color codes {{{1
 RS="\[\033[0m\]"    # reset
 HC="\[\033[1m\]"    # hicolor
 UL="\[\033[4m\]"    # underline
@@ -21,9 +21,28 @@ BBLE="\[\033[44m\]" # background blue
 BMAG="\[\033[45m\]" # background magenta
 BCYN="\[\033[46m\]" # background cyan
 BWHT="\[\033[47m\]" # background white
+# COLOR Codes
+Cbase03="\[\033[8m\]"
+Cbase02="\[\033[16m\]"
+Cbase01="\[\033[10m\]"
+Cbase00="\[\033[11m\]"
+Cbase0="\[\033[12m\]"
+Cbase1="\[\033[14m\]"
+Cbase2="\[\033[7m\]"
+Cbase3="\[\033[15m\]"
+Cyellow="\[\033[3m\]"
+Corange="\[\033[9m\]"
+Cred="\[\033[1m\]"
+Cmagenta="\[\033[5m\]"
+Cviolet="\[\033[13m\]"
+Cblue="\[\033[4m\]"
+Ccyan="\[\033[6m\]"
+Cgreen="\[\033[2m\]"
+CNORM="\[\033[0m\]"
 
+# Themes {{{1
+# Define themes here
 # Solarized Hex values
-
 SolHexBase03="#002b36"
 SolHexBase02="#073642"
 SolHexBase01="#586e75"
@@ -41,28 +60,11 @@ SolHexBlue="#268bd2"
 SolHexCyan="#2aa198"
 SolHexGreen="#859900"
 
-# COLOR Codes
-Cbase03="\[\033[m\]"
-Cbase02="\[\033[m\]"
-Cbase01="\[\033[m\]"
-Cbase00="\[\033[m\]"
-Cbase0="\[\033[m\]"
-Cbase1="\[\033[m\]"
-Cbase2="\[\033[m\]"
-Cbase3="\[\033[m\]"
-Cyellow="\[\033[3m\]"
-Corange="\[\033[9m\]"
-Cred="\[\033[1m\]"
-Cmagenta="\[\033[5m\]"
-Cviolet="\[\033[13m\]"
-Cblue="\[\033[4m\]"
-Ccyan="\[\033[6m\]"
-Cgreen="\[\033[2m\]"
-CNORM="\[\033[0m\]"
+# more themes here
 
-
+# Applay the Theme
 set_theme(){
-
+    # Insert logic to set themes here.
     #use terminal control secquences to set the terminal colors
     echo -ne "\e]10;$SolHexBase00\a"  # Foreground -> base00
     echo -ne "\e]11;$SolHexBase03\a"  # Background -> base03
@@ -85,5 +87,7 @@ set_theme(){
     echo -ne "\e]4;15;$SolHexBase3\a"  # bold white -> Base3}
 }
 
-
+# set the theme
 set_theme
+
+

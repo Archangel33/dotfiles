@@ -8,3 +8,4 @@ echo "colors: $BASHCOLORS"
 #{{{1 source setup scripts
 [ -e "$BASHCOLORS" ]    && source "$BASHCOLORS"
 [ -e "$PROMPTRC" ]      && source "$PROMPTRC"
+[ -e "$ALIASES" ]       && source "$ALIASES"

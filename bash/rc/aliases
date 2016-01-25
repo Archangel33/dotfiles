@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+
+# ls Command
 LS_COMMON="-hG"
 # --color : On Windows7 this produces permission errors, e.g. for Music folder:
 LS_COMMON="$LS_COMMON --color=auto"
