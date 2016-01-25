@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+# ANSI color codes
+RS="\[\033[0m\]"    # reset
+HC="\[\033[1m\]"    # hicolor
+UL="\[\033[4m\]"    # underline
+INV="\[\033[7m\]"   # inverse background and foreground
+FBLK="\[\033[30m\]" # foreground black
+FRED="\[\033[31m\]" # foreground red
+FGRN="\[\033[32m\]" # foreground green
+FYEL="\[\033[33m\]" # foreground yellow
+FBLE="\[\033[34m\]" # foreground blue
+FMAG="\[\033[35m\]" # foreground magenta
+FCYN="\[\033[36m\]" # foreground cyan
+FWHT="\[\033[37m\]" # foreground white
+BBLK="\[\033[40m\]" # background black
+BRED="\[\033[41m\]" # background red
+BGRN="\[\033[42m\]" # background green
+BYEL="\[\033[43m\]" # background yellow
+BBLE="\[\033[44m\]" # background blue
+BMAG="\[\033[45m\]" # background magenta
+BCYN="\[\033[46m\]" # background cyan
+BWHT="\[\033[47m\]" # background white
+
+# Solarized Hex values
+
+SolHexBase03="#002b36"
+SolHexBase02="#073642"
+SolHexBase01="#586e75"
+SolHexBase00="#657b83"
+SolHexBase0="#839496"
+SolHexBase1="#93a1a1"
+SolHexBase2="#eee8d5"
+SolHexBase3="#fdf6e3"
+SolHexYellow="#b58900"
+SolHexOrange="#cb4b16"
+SolHexRed="#dc322f"
+SolHexMagenta="#d33682"
+SolHexViolet="#6c71c4"
+SolHexBlue="#268bd2"
+SolHexCyan="#2aa198"
+SolHexGreen="#859900"
+
+# COLOR Codes
+Cbase03="\[\033[m\]"
+Cbase02="\[\033[m\]"
+Cbase01="\[\033[m\]"
+Cbase00="\[\033[m\]"
+Cbase0="\[\033[m\]"
+Cbase1="\[\033[m\]"
+Cbase2="\[\033[m\]"
+Cbase3="\[\033[m\]"
+Cyellow="\[\033[3m\]"
+Corange="\[\033[9m\]"
+Cred="\[\033[1m\]"
+Cmagenta="\[\033[5m\]"
+Cviolet="\[\033[13m\]"
+Cblue="\[\033[4m\]"
+Ccyan="\[\033[6m\]"
+Cgreen="\[\033[2m\]"
+CNORM="\[\033[0m\]"
+
+
+set_theme(){
+
+    #use terminal control secquences to set the terminal colors
+    echo -ne "\e]10;$SolHexBase00\a"  # Foreground -> base00
+    echo -ne "\e]11;$SolHexBase03\a"  # Background -> base03
+    echo -ne "\e]12;$SolHexBase1\a"  # Cursor -> base1
+
+    echo -ne "\e]4;1;$SolHexRed\a"   # red
+    echo -ne "\e]4;2;$SolHexGreen\a"  # green
+    echo -ne "\e]4;3;$SolHexYellow\a"   # yellow
+    echo -ne "\e]4;4;$SolHexBlue\a"   # blue
+    echo -ne "\e]4;5;$SolHexMagenta\a"   # magenta
+    echo -ne "\e]4;6;$SolHexCyan\a"   # cyan
+    echo -ne "\e]4;7;$SolHexBase2\a"   # white (light grey really) -> Base2
+    echo -ne "\e]4;8;$SolHexBase03\a"   # bold black (i.e. dark grey -> Base03)
+    echo -ne "\e]4;9;$SolHexOrange\a"   # bold red -> orange
+    echo -ne "\e]4;10;$SolHexBase01\a"  # bold green -> base01
+    echo -ne "\e]4;11;$SolHexBase00\a"  # bold yellow -> base00
+    echo -ne "\e]4;12;$SolHexBase0\a"  # bold blue -> base0
+    echo -ne "\e]4;13;$SolHexViolet\a"  # bold magenta -> violet
+    echo -ne "\e]4;14;$SolHexBase1\a"  # bold cyan -> base1
+    echo -ne "\e]4;15;$SolHexBase3\a"  # bold white -> Base3}
+}
+
+
+set_theme
