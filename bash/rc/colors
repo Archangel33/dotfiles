@@ -22,23 +22,23 @@ BMAG="\[\033[45m\]" # background magenta
 BCYN="\[\033[46m\]" # background cyan
 BWHT="\[\033[47m\]" # background white
 # COLOR Codes
-Cbase03="\[\033[8m\]"
-Cbase02="\[\033[16m\]"
-Cbase01="\[\033[10m\]"
-Cbase00="\[\033[11m\]"
-Cbase0="\[\033[12m\]"
-Cbase1="\[\033[14m\]"
-Cbase2="\[\033[7m\]"
-Cbase3="\[\033[15m\]"
-Cyellow="\[\033[3m\]"
-Corange="\[\033[9m\]"
-Cred="\[\033[1m\]"
-Cmagenta="\[\033[5m\]"
-Cviolet="\[\033[13m\]"
-Cblue="\[\033[4m\]"
-Ccyan="\[\033[6m\]"
-Cgreen="\[\033[2m\]"
-CNORM="\[\033[0m\]"
+Cbase03="\033[8m"
+Cbase02="\033[16m"
+Cbase01="\033[10m"
+Cbase00="\033[11m"
+Cbase0="\033[12m"
+Cbase1="\033[14m"
+Cbase2="\033[7m"
+Cbase3="\033[15m"
+Cyellow="\033[3m"
+Corange="\033[9m"
+Cred="\033[1m"
+Cmagenta="\033[5m"
+Cviolet="\033[13m"
+Cblue="\033[4m"
+Ccyan="\033[6m"
+Cgreen="\033[2m"
+CNORM="\033[0m"
 
 # Themes {{{1
 # Define themes here
@@ -60,31 +60,78 @@ SolHexBlue="#268bd2"
 SolHexCyan="#2aa198"
 SolHexGreen="#859900"
 
-# more themes here
+export base03='\033[1;30;40m'
+export base02='\033[0;30;40m'
+export base01='\033[0;32;40m'
+export base00='\033[0;33;40m'
+export base0='\033[0;34;40m'
+export base1='\033[0;36;40m'
+export base2='\033[0;37;40m'
+export base3='\033[1;37;40m'
+export yellow='\033[1;33;40m'
+export orange='\033[0;31;40m'
+export red='\033[1;31;40m'
+export magenta='\033[1;35;40m'
+export violet='\033[0;35;40m'
+export export blue='\033[1;34;40m'
+export cyan='\033[1;36;40m'
+export green='\033[1;32;40m'
+export reset='\033[0m'
 
-# Applay the Theme
+# more themes here
+SOLDARK="SOLDARK"
+
+DEFAULT_THEME=$SOLDARK
+
 set_theme(){
     # Insert logic to set themes here.
     #use terminal control secquences to set the terminal colors
-    echo -ne "\e]10;$SolHexBase00\a"  # Foreground -> base00
-    echo -ne "\e]11;$SolHexBase03\a"  # Background -> base03
-    echo -ne "\e]12;$SolHexBase1\a"  # Cursor -> base1
+    #echo -ne "\e]10;$SolHexBase00\a"  # Foreground -> base00
+    #echo -ne "\e]11;$SolHexBase03\a"  # Background -> base0
+    #echo -ne "\e]12;$SolHexBase1\a"  # Cursor -> base1
 
-    echo -ne "\e]4;1;$SolHexRed\a"   # red
-    echo -ne "\e]4;2;$SolHexGreen\a"  # green
-    echo -ne "\e]4;3;$SolHexYellow\a"   # yellow
-    echo -ne "\e]4;4;$SolHexBlue\a"   # blue
-    echo -ne "\e]4;5;$SolHexMagenta\a"   # magenta
-    echo -ne "\e]4;6;$SolHexCyan\a"   # cyan
-    echo -ne "\e]4;7;$SolHexBase2\a"   # white (light grey really) -> Base2
-    echo -ne "\e]4;8;$SolHexBase03\a"   # bold black (i.e. dark grey -> Base03)
-    echo -ne "\e]4;9;$SolHexOrange\a"   # bold red -> orange
-    echo -ne "\e]4;10;$SolHexBase01\a"  # bold green -> base01
-    echo -ne "\e]4;11;$SolHexBase00\a"  # bold yellow -> base00
-    echo -ne "\e]4;12;$SolHexBase0\a"  # bold blue -> base0
-    echo -ne "\e]4;13;$SolHexViolet\a"  # bold magenta -> violet
-    echo -ne "\e]4;14;$SolHexBase1\a"  # bold cyan -> base1
-    echo -ne "\e]4;15;$SolHexBase3\a"  # bold white -> Base3}
+   # echo -ne "\e]4;1;$SolHexRed\a"   # red
+   # echo -ne "\e]4;2;$SolHexGreen\a"  # green
+   # echo -ne "\e]4;3;$SolHexYellow\a"   # yellow
+   # echo -ne "\e]4;4;$SolHexBlue\a"   # blue
+   # echo -ne "\e]4;5;$SolHexMagenta\a"   # magenta
+   # echo -ne "\e]4;6;$SolHexCyan\a"   # cyan
+   # echo -ne "\e]4;7;$SolHexBase2\a"   # white (light grey really) -> Base2
+   # echo -ne "\e]4;8;$SolHexBase03\a"   # bold black (i.e. dark grey -> Base03)
+   # echo -ne "\e]4;9;$SolHexOrange\a"   # bold red -> orange
+   # echo -ne "\e]4;10;$SolHexBase01\a"  # bold green -> base01
+   # echo -ne "\e]4;11;$SolHexBase00\a"  # bold yellow -> base00
+   # echo -ne "\e]4;12;$SolHexBase0\a"  # bold blue -> base0
+   # echo -ne "\e]4;13;$SolHexViolet\a"  # bold magenta -> violet
+   # echo -ne "\e]4;14;$SolHexBase1\a"  # bold cyan -> base1
+   # echo -ne "\e]4;15;$SolHexBase3\a"  # bold white -> Base3}
+    case $1 in
+        "SOLDARK" )
+            echo -ne "\eP\e]10;$SolHexBase00\a"     # Foreground   -> base00
+            echo -ne "\eP\e]11;$SolHexBase03\a"     # Background   -> base03
+
+            echo -ne "\eP\e]12;$SolHexGreen\a"      # Cursor       -> base1
+
+            echo -ne "\eP\e]4;0;$SolHexBase02\a"    # black        -> Base02
+            echo -ne "\eP\e]4;8;$SolHexBase03\a"    # bold black   -> Base03
+            echo -ne "\eP\e]4;1;$SolHexRed\a"       # red          -> red
+            echo -ne "\eP\e]4;9;$SolHexOrange\a"    # bold red     -> orange
+            echo -ne "\eP\e]4;2;$SolHexGreen\a"     # green        -> green
+            echo -ne "\eP\e]4;10;$SolHexBase01\a"   # bold green   -> base01 *
+            echo -ne "\eP\e]4;3;$SolHexYellow\a"    # yellow       -> yellow
+            echo -ne "\eP\e]4;11;$SolHexBase00\a"   # bold yellow  -> base00 *
+            echo -ne "\eP\e]4;4;$SolHexBlue\a"      # blue         -> blue
+            echo -ne "\eP\e]4;12;$SolHexBase0\a"    # bold blue    -> base0 *
+            echo -ne "\eP\e]4;5;$SolHexMagenta\a"   # magenta      -> magenta
+            echo -ne "\eP\e]4;13;$SolHexViolet\a"   # bold magenta -> violet
+            echo -ne "\eP\e]4;6;$SolHexCyan\a"      # cyan         -> cyan
+            echo -ne "\eP\e]4;14;$SolHexBase1\a"    # bold cyan    -> base1 *
+            echo -ne "\eP\e]4;7;$SolHexBase2\a"     # white        -> Base2
+            echo -ne "\eP\e]4;15;$SolHexBase3\a"    # bold white   -> Base3
+            ;;
+        * | ? )
+            confirm "No theme was supplied, do you want to use the default theme ($DEFAULT_THEME)" && set_theme $DEFAULT_THEME
+        esac
 }
 
 # set the theme

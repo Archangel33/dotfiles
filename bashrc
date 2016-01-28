@@ -6,7 +6,9 @@ if [ ! -z "$RCRELOAD" ]; then
         DIRBashrc \
         ALIASES \
         BASHCOLORS \
+        DIRCOLORS \
         PROMPTRC \
+        RCSHELL \
         RCRELOAD
 fi
 
@@ -14,8 +16,12 @@ fi
 [ -z "$DIRBashrc" ]     && DIRBashrc="$HOME/.bash/rc"
 [ -z "$ALIASES" ]       && ALIASES="$DIRBashrc/aliases"
 [ -z "$BASHCOLORS" ]    && BASHCOLORS="$DIRBashrc/colors"
+[ -z "$DIRCOLORS" ]     && DIRCOLORS="$DIRBashrc/dir_colors"
 [ -z "$PROMPTRC" ]      && PROMPTRC="$DIRBashrc/prompt"
+[ -z "$RCSHELL" ]       && RCSHELL="$DIRBashrc/shell"
 #{{{1 source setup scripts
+[ -e "$RCSHELL" ]       && source "$RCSHELL"
 [ -e "$BASHCOLORS" ]    && source "$BASHCOLORS"
 [ -e "$PROMPTRC" ]      && source "$PROMPTRC"
+[ -e "$DIRCOLORS" ]     && dircolors "$DIRCOLORS"
 [ -e "$ALIASES" ]       && source "$ALIASES"

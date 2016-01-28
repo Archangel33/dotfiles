@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # vim: foldlevel=1 spell
 # dotInstall.sh
 # This script creates symlinks from the home directory to any desired dotfiles in ~/.dotfiles
@@ -80,7 +80,7 @@ dir_must_exist() {
 [ -z "$DOTFILES_backup" ]   && DOTFILES_backup="$HOME/.dotfiles_old/$(timestamp)"              # old dotfiles backup directory
 [ -z "$DOTFILES_URI" ]      && DOTFILES_URI='https://github.com/Archangel33/dotfiles.git'   # repo URI of
 [ -z "$DOTFILES_branch" ]   && DOTFILES_branch='master'                                        # branch to pull your dotfiles from
-DOTFILES="vimrc gitconfig gitignore vim"                                                        # list of files/folders to symlink in homedir
+DOTFILES="vimrc gitconfig gitignore vim bash bashrc"                                                        # list of files/folders to symlink in homedir
 
 [ -z "$VUNDLE_name" ]   && VUNDLE_name="vundle"                                            # name of vundle
 [ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/vundle"                          # Path to bundles dir for Vundle
@@ -88,6 +88,7 @@ DOTFILES="vimrc gitconfig gitignore vim"                                        
 [ -z "$VUNDLE_branch" ] && VUNDLE_branch="master"                                            # branch from pull vundle frome
 [ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="vim/rc/.vimrc.bundles.local"
 
+[ -z "$BASHRC_path" ]   && BASHRC_path="$HOME/.bashrc"
 
 ###### Install functions {{{1
 do_backup() {
@@ -156,6 +157,11 @@ setup_vundle() {
     status_msg out "updating/installing plugins using Vundle"
 }
 
+setup_bash(){
+    msg "Sourcing $1"
+    source $1
+}
+
 ################################ MAIN(){{{1
 variable_set "$HOME"
 program_must_exist "git"
@@ -189,3 +195,4 @@ sync_repo       "$VUNDLE_path" \
 setup_vundle    "$DOTFILES_path" \
                 "$VUNDLE_default_bundle_path"
 
+setup_bash      "$BASHRC_path"

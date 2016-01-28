@@ -1,0 +1,47 @@
+confirm () {
+    # call with a prompt string or use a default
+    read -r -t 5 -p "${1:-Are you sure? [y/N]} " response
+    case $response in
+        [yY][eE][sS]|[yY])
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+
+notify (){
+    notify_usage() { echo "notify [[-S SuccessStr] [-F FailString] [-A ActionStr]] Action" 1>&2; exit; }
+
+    local OPTIND o S F A
+    while getopts ":S:F:A:" o; do
+        case "${o}" in
+            S) # succes
+                SUCCESSstr="${OPTARG}"
+                ;;
+            F) # fail
+                FAILstr="${OPTARG}"
+                ;;
+            A) # action
+                ACTIONstr="${OPTARG}"
+                ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    # print action string if provided
+    if [ ! -z "${ACTIONstr}" ]; then
+        printf "${ACTIONstr}"
+    fi
+    # do action
+
+    if [ "$@" -eq 0 ]; then
+        printf "${SUCCESSstr:-Success!}"
+    else
+        printf "${FAILstr:-Fail!}"
+    fi
+
+    return 0
+
+}

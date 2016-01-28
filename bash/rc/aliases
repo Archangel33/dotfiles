@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo "Setting up aliases..."
 
 # ls Command
 LS_COMMON="-hG"
@@ -20,4 +21,4 @@ LS_COMMON="$LS_COMMON -I Thumbs.db"
 # LS_COMMON="$LS_COMMON -I Searches\*"
 # LS_COMMON="$LS_COMMON -I Videos\*"
 # LS_COMMON="$LS_COMMON -I Desktop\*"
-alias ls="command ls $LS_COMMON" # Windowws git bash
+alias ls="command ls $LS_COMMON" # Windows git bash
