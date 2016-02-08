@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+printf "Setting up colors...\n"
 # ANSI color codes {{{1
 RS="\[\033[0m\]"    # reset
 HC="\[\033[1m\]"    # hicolor
@@ -21,24 +22,6 @@ BBLE="\[\033[44m\]" # background blue
 BMAG="\[\033[45m\]" # background magenta
 BCYN="\[\033[46m\]" # background cyan
 BWHT="\[\033[47m\]" # background white
-# COLOR Codes
-Cbase03="\033[8m"
-Cbase02="\033[16m"
-Cbase01="\033[10m"
-Cbase00="\033[11m"
-Cbase0="\033[12m"
-Cbase1="\033[14m"
-Cbase2="\033[7m"
-Cbase3="\033[15m"
-Cyellow="\033[3m"
-Corange="\033[9m"
-Cred="\033[1m"
-Cmagenta="\033[5m"
-Cviolet="\033[13m"
-Cblue="\033[4m"
-Ccyan="\033[6m"
-Cgreen="\033[2m"
-CNORM="\033[0m"
 
 # Themes {{{1
 # Define themes here
@@ -78,7 +61,94 @@ export cyan='\033[1;36;40m'
 export green='\033[1;32;40m'
 export reset='\033[0m'
 
-# more themes here
+function set_color_codes(){
+colors=$(tput colors)
+# COLOR Codes
+Cbase03="\033[8m"
+Cbase02="\033[16m"
+Cbase01="\033[10m"
+Cbase00="\033[11m"
+Cbase0="\033[12m"
+Cbase1="\033[14m"
+Cbase2="\033[7m"
+Cbase3="\033[15m"
+Cyellow="\033[3m"
+Corange="\033[9m"
+Cred="\033[1m"
+Cmagenta="\033[5m"
+Cviolet="\033[13m"
+Cblue="\033[4m"
+Ccyan="\033[6m"
+Cgreen="\033[2m"
+CNORM="\033[0m"
+
+if [[ "$colors" -ge 256 ]]; then # Terminal supports 256 colours
+    color0="0"
+    color1="38;5;235"
+    color2="38;5;234"
+    color3="38;5;240"
+    color4="38;5;241"
+    color5="38;5;244"
+    color6="38;5;245"
+    color7="38;5;354"
+    color8="38;5;230"
+    color9="38;5;136"
+    color10="38;5;166"
+    color11="38;5;160"
+    color12="38;5;125"
+    color13="38;5;61"
+    color14="38;5;33"
+    color15="38;5;37"
+    color16="38;5;64"
+
+elif [[ "$colors" -ge 8 ]]; then # Terminal supports only eight colours
+    color0="0"
+    color1="30"
+    color2="01;30"
+    color3="31"
+    color4="01;31"
+    color5="32"
+    color6="01;32"
+    color7="33"
+    color8="01;33"
+    color9="34"
+    color10="01;34"
+    color11="35"
+    color12="01;35"
+    color13="36"
+    color14="01;36"
+    color15="37"
+    color16="01;36"
+
+else # Terminal may not support colour at all
+    # leave these blank if you add more colors add more blanks here
+    color0=
+    color1=
+    color2=
+    color3=
+    color4=
+    color5=
+    color6=
+    color7=
+    color8=
+    color9=
+    color10=
+    color11=
+    color12=
+    color13=
+    color14=
+    color15=
+    color16=
+fi
+
+
+
+# Setup color vars here
+
+
+
+}
+
 SOLDARK="SOLDARK"
 
 DEFAULT_THEME=$SOLDARK
@@ -128,13 +198,22 @@ set_theme(){
             echo -ne "\eP\e]4;14;$SolHexBase1\a"    # bold cyan    -> base1 *
             echo -ne "\eP\e]4;7;$SolHexBase2\a"     # white        -> Base2
             echo -ne "\eP\e]4;15;$SolHexBase3\a"    # bold white   -> Base3
+
+            local DIR_COLORS="dir_colors"
+            #if [ $(whichTerm) = "xmintty" ]; then
+                $DIR_COLORS="dir_colors.mintty"
+            #fi
+            #eval `dircolors ${}colors.d/$DIR_COLORS`
             ;;
         * | ? )
-            confirm "No theme was supplied, do you want to use the default theme ($DEFAULT_THEME)" && set_theme $DEFAULT_THEME
+            #confirm "No theme was supplied, do you want to use the default theme ($DEFAULT_THEME)" && set_theme $DEFAULT_THEME
+            set_theme $DEFAULT_THEME
         esac
 }
 
-# set the theme
-set_theme
 
+
+set_color_codes
+# set the theme
+set_theme $DEFAULT_THEME
 
