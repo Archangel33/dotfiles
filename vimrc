@@ -12,7 +12,7 @@
 "   While much of it is beneficial for general use, I would
 "   recommend picking out the parts you want and understand.
 "
-"   You can find me at http://spf13.com
+"   You can find me at http:spf13.com
 "
 "   Copyright 2014 Steve Francia
 "
@@ -20,7 +20,7 @@
 "   you may not use this file except in compliance with the License.
 "   You may obtain a copy of the License at
 "
-"       http://www.apache.org/licenses/LICENSE-2.0
+"       http:www.apache.org/licenses/LICENSE-2.0
 "
 "   Unless required by applicable law or agreed to in writing, software
 "   distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,7 @@
     " }
 
     " Arrow Key Fix {
-        " https://github.com/spf13/spf13-vim/issues/780
+        " https:github.com/spf13/spf13-vim/issues/780
         if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
             inoremap <silent> <C-[>OC <RIGHT>
         endif
@@ -127,7 +127,7 @@
     " your .vimrc.before.local file:
     "   let g:spf13_no_autochdir = 1
     if !exists('g:spf13_no_autochdir')
-        autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+        autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*:" | lcd %:p:h | endif
         " Always switch to the current file directory
     endif
 
@@ -146,7 +146,7 @@
     " set it to the first line when editing a git commit message
     au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
-    " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+    " http:vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
     " Restore cursor to file position in previous editing session
     " To disable this, add the following to your .vimrc.before.local file:
     "   let g:spf13_no_restore_cursor = 1
@@ -432,14 +432,14 @@
     vnoremap > >gv
 
     " Allow using the repeat operator with a visual selection (!)
-    " http://stackoverflow.com/a/8064607/127816
+    " http:stackoverflow.com/a/8064607/127816
     vnoremap . :normal .<CR>
 
     " For when you forget to sudo.. Really Write the file.
     cmap w!! w !sudo tee % >/dev/null
 
     " Some helpers to edit mode
-    " http://vimcasts.org/e/14
+    " http:vimcasts.org/e/14
     cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
     map <leader>ew :e %%
     map <leader>es :sp %%
@@ -1164,7 +1164,7 @@
         let l = line(".")
         let c = col(".")
         " do the business:
-        %s/\s\+$//e
+        %s/\s\+$e
         " clean up: restore previous search history, and cursor position
         let @/=_s
         call cursor(l, c)
