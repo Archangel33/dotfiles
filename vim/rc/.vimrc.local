@@ -30,3 +30,7 @@ noremap <leader>j <C-w>j
 noremap <leader>k <C-w>k
 noremap <leader>l <C-w>l
 
+" set colors in log files
+autocmd BufNewFile,BufReadPost *.log :set filetype=messages
+autocmd BufNewFile,BufReadPost /var/log/* :set filetype=messages
+
