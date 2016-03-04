@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 confirm () {
     # call with a prompt string or use a default
     read -r -t 5 -p "${1:-Are you sure? [y/N]} " response
