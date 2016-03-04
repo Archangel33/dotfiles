@@ -78,8 +78,8 @@ set_theme(){
             SolHexCyan="#2aa198"
             SolHexGreen="#859900"
 
-            case TERMTYPE in
-                "mintty" )
+            case $TERMTYPE in
+                mintty )
 
                     # use terminal codes to change the colors used by the terminal
                     echo -ne "\eP\e]10;$SolHexBase0\a"      # Foreground   -> base0
