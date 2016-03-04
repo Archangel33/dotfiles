@@ -118,5 +118,5 @@ set_theme $DEFAULT_THEME
 DIR_COLORS_CONFIG=${DIR_COLORS:=dir_colors}${CURRENT_THEME:+.$CURRENT_THEME}${TERMTYPE:+.$TERMTYPE}
 # check to make sure file exists
 if [ -f ${DIR_COLORS_CONFIG} ]; then
-    eval $(dircolors colors.d/${DIR_COLORS_CONFIG}) #Execute dircolors with existing Config file
+    eval "$(dircolors colors.d/${DIR_COLORS_CONFIG})" #Execute dircolors with existing Config file
 fi
