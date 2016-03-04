@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-echo "Setting up aliases..."
 
 # ls Command
 LS_COMMON="-hG"
