@@ -1,4 +1,4 @@
-echo "Setting up PS1..."
+#!/usr/bin/env bash
 GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWUPSTREAM='verbose git'
 export GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWUPSTREAM

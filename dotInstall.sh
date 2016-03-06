@@ -186,6 +186,9 @@ create_symlinks "$DOTFILES" \
                 "$DOTFILES_path"
 
 # Any application specific setup {{{2
+# setup_Shell {{{3
+setup_bash      "$BASHRC_path"
+
 # Vundle {{{3
 sync_repo       "$VUNDLE_path" \
                 "$VUNDLE_URI" \
@@ -195,4 +198,3 @@ sync_repo       "$VUNDLE_path" \
 setup_vundle    "$DOTFILES_path" \
                 "$VUNDLE_default_bundle_path"
 
-setup_bash      "$BASHRC_path"
