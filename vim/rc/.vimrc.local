@@ -1,6 +1,42 @@
-:set guifont=Sauce_Code_Powerline:h10:cANSI
+
+" Use these as section headers
+" 1 important
+" 2 moving around, searching and patterns
+" 3 tags
+" 4 displaying text
+" 5 syntax, highlighting and spelling
+" 6 multiple windows
+" 7 multiple tab pages
+" 8 terminal
+" 9 using the mouse
+"10 GUI
+"11 printing
+"12 messages and info
+"13 selecting text
+"14 editing text
+"15 tabs and indenting
+"16 folding
+"17 diff mode
+"18 mapping
+"19 reading and writing files
+"20 the swap file
+"21 command line editing
+"22 executing external commands
+"23 running make and jumping to errors
+"24 system specific
+"25 language specific
+"26 multi-byte characters
+"27 various
+
+
+
+
+set guifont=Sauce_Code_Powerline:h10:cANSI
+set encoding=utf8
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
+" set cursor to be a block
 set gcr=a:block
 
 " mode aware cursors
@@ -18,11 +54,18 @@ hi VisualCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=125 guibg=#d33682
 hi ReplaceCursor ctermfg=15 guifg=#fdf6e3 ctermbg=65  guibg=#dc322f
 hi CommandCursor ctermfg=15 guifg=#fdf6e3 ctermbg=166 guibg=#cb4b16
 
+" if compiled with colorcolumn
+if (exists('+colorcolumn'))
+    set colorcolumn=80
+    highlight ColorColumn ctermbg=9
+endif
+
 " Set leader o to insert lines before or after current line
+" without exiting Normal mode
 nnoremap <leader>o o<ESC>
 nnoremap <leader>O O<ESC>
 
-"  -- / == to left/right through tabs 
+"  -- / == to left/right through tabs
 noremap -- :bp<CR>
 noremap == :bn<CR>
 noremap <leader>h <C-w>h
@@ -31,5 +74,65 @@ noremap <leader>k <C-w>k
 noremap <leader>l <C-w>l
 
 " set colors in log files
-autocmd BufNewFile,BufReadPost *.log :set filetype=messages
-autocmd BufNewFile,BufReadPost /var/log/* :set filetype=messages
+"autocmd BufNewFile,BufReadPost *.log :set filetype=messages
+"autocmd BufNewFile,BufReadPost /var/log/* :set filetype=messages
+
+" define function to confirm creating a directory if it doesn't exist
+function! MkDirAndConfirm(path, dir)
+    silent doautocmd BufWritePre
+
+    " Directory exists, :write and return
+    if isdirectory(a:dir)
+        execute 'write ' . a:path
+        silent doautocmd BufWritePost
+        return
+    endif
+
+    " Ask for confirmation to create this directory
+    echohl Question
+    echo "Create directory '". a:dir . "' [y/N]? "
+    echohl None
+
+    let response = nr2char(getchar())
+    " mkdir() and :write if we want to make the directory
+    if response ==? "y"
+        call mkdir(a:dir, "p")
+        execute 'write ' . a:path
+        silent doautocmd BufWritePost
+    endif
+endfunction
+" call MkDirAndConfirm on buff write
+autocmd BufWriteCmd * call MkDirAndConfirm(expand("<amatch>:p"), expand("<amatch>:p:h"))
+
+" folding
+augroup vimrc
+  au BufReadPre * setlocal foldmethod=indent
+  au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
+augroup END
+
+" this may need to go somewhere like '~/.vim/bundle/[nerdTree dir]/[nerdTree
+" plugin]/[my mappings].vim'
+"
+"let g:NERDTreeCustomQuickCommands = '1'
+"
+"call NERDTreeAddKeyMap({
+"\ 'key': 'cqc',
+"            \ 'scope': 'all',
+"            \ 'callback': 'NERDTreeCustomQuickCommandsToggle',
+"            \ 'quickhelpText': 'Toggle custom commands'})
+"
+"function! NERDTreeCustomQuickCommandsToggle()
+"    let g:NERDTreeCustomQuickCommands = g:NERDTreeCustomQuickCommands ? 0 : 1
+"    echomsg (g:NERDTreeCustomQuickCommands ? 'Enabled' : 'Disabled') . 'Custom Quick Commands'
+"endfunction
+"
+"call NERDTreeAddKeyMap({
+"            \ 'key': 'a',
+"            \ 'scope': 'DirNode',
+"            \ 'callback': 'NERDTreeCustomNewFile',
+"            \ 'quickhelpText': 'create new file and edit'})
+"
+"function! NERDTreeCustomNewFile(dirnode)
+"    let l:path=a:dirnode.path.str()
+"    " todo: add logic to ask for a file name and use that to open a new buffer
+"endfunction
