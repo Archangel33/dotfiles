@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# ANSI color codes
+RS="\033[0m"       # reset
+BC="\033[1m"       # bright color
+UL="\033[4m"       # underline
+INV="\033[7m"      # inverse background and foreground
+BLK="\033[30m"     # fg black
+BRBLK="\033[1;30m" # fg bright black
+RED="\033[31m"     # fg red
+BRRED="\033[1;31m" # fg bright red
+GRN="\033[32m"     # fg green
+BRGRN="\033[1;32m" # fg bright green
+YEL="\033[33m"     # fg yellow
+BRYEL="\033[1;33m" # fg bright yellow
+BLU="\033[34m"     # fg blue
+BRBLU="\033[1,34m" # fg bright blue
+MAG="\033[35m"     # fg magenta
+BRMAG="\033[1;35m" # fg bright magenta
+CYN="\033[36m"     # fg cyan
+BRCYN="\033[1;36m" # fg bright cyan
+WHT="\033[37m"     # fg white
+BRWHT="\033[1;37m" # fg bright white
+BGBLK="\033[40m" # bg black
+BGRED="\033[41m" # bg red
+BGGRN="\033[42m" # bg green
+BGYEL="\033[43m" # bg yellow
+BGBLU="\033[44m" # bg blue
+BGMAG="\033[45m" # bg magenta
+BGCYN="\033[46m" # bg cyan
+BGWHT="\033[47m" # bg white
+
+numcolors=$(tput colors)
+# COLOR Codes
+Cbase03="\033[8m"
+Cbase02="\033[16m"
+Cbase01="\033[10m"
+Cbase00="\033[11m"
+Cbase0="\033[12m"
+Cbase1="\033[14m"
+Cbase2="\033[7m"
+Cbase3="\033[15m"
+Cyellow="\033[3m"
+Corange="\033[9m"
+Cred="\033[1m"
+Cmagenta="\033[5m"
+Cviolet="\033[13m"
+Cblue="\033[4m"
+Ccyan="\033[6m"
+Cgreen="\033[2m"
+CNORM="\033[0m"
+
+SOLDARK="SOLDARK"
+CURRENT_THEME=
+DEFAULT_THEME="$SOLDARK"
+
+TERMTYPE=$(whichTerm)
+
+set_theme(){
+    case $1 in
+        "$SOLDARK" )
+            CURRENT_THEME="$SOLDARK"
+            # Solarized Hex values
+            SolHexBase03="#002b36"
+            SolHexBase02="#073642"
+            SolHexBase01="#586e75"
+            SolHexBase00="#657b83"
+            SolHexBase0="#839496"
+            SolHexBase1="#93a1a1"
+            SolHexBase2="#eee8d5"
+            SolHexBase3="#fdf6e3"
+            SolHexYellow="#b58900"
+            SolHexOrange="#cb4b16"
+            SolHexRed="#dc322f"
+            SolHexMagenta="#d33682"
+            SolHexViolet="#6c71c4"
+            SolHexBlue="#268bd2"
+            SolHexCyan="#2aa198"
+            SolHexGreen="#859900"
+
+            case $TERMTYPE in
+                mintty )
+
+                    # use terminal codes to change the colors used by the terminal
+                    echo -ne "\eP\e]10;$SolHexBase0\a"      # Foreground   -> base0
+                    echo -ne "\eP\e]11;$SolHexBase03\a"     # Background   -> base03
+
+                    echo -ne "\eP\e]12;$SolHexGreen\a"      # Cursor       -> green
+
+                    echo -ne "\eP\e]4;0;$SolHexBase02\a"    # black        -> Base02
+                    echo -ne "\eP\e]4;8;$SolHexBase03\a"    # bold black   -> Base03
+                    echo -ne "\eP\e]4;1;$SolHexRed\a"       # red          -> red
+                    echo -ne "\eP\e]4;9;$SolHexOrange\a"    # bold red     -> orange
+                    echo -ne "\eP\e]4;2;$SolHexGreen\a"     # green        -> green
+                    echo -ne "\eP\e]4;10;$SolHexBase01\a"   # bold green   -> base01
+                    echo -ne "\eP\e]4;3;$SolHexYellow\a"    # yellow       -> yellow
+                    echo -ne "\eP\e]4;11;$SolHexBase00\a"   # bold yellow  -> base00
+                    echo -ne "\eP\e]4;4;$SolHexBlue\a"      # blue         -> blue
+                    echo -ne "\eP\e]4;12;$SolHexBase0\a"    # bold blue    -> base0
+                    echo -ne "\eP\e]4;5;$SolHexMagenta\a"   # magenta      -> magenta
+                    echo -ne "\eP\e]4;13;$SolHexViolet\a"   # bold magenta -> violet
+                    echo -ne "\eP\e]4;6;$SolHexCyan\a"      # cyan         -> cyan
+                    echo -ne "\eP\e]4;14;$SolHexBase1\a"    # bold cyan    -> base1
+                    echo -ne "\eP\e]4;7;$SolHexBase2\a"     # white        -> Base2
+                    echo -ne "\eP\e]4;15;$SolHexBase3\a"    # bold white   -> Base3
+                    ;;
+            esac
+            ;;
+        * | ? )
+            ;; #Dont change the current colors TODO: Add logging
+        esac
+}
+
+
+set_theme $DEFAULT_THEME
+
+# evaluate the correct dircolors config in the format 'dir_colors.THEME.TERMTYPE' ex. dir_colors.SOLDARK.mintty default to 'dir_colors'
+DIR_COLORS_CONFIG=${DIR_COLORS:=dir_colors}${CURRENT_THEME:+.$CURRENT_THEME}${TERMTYPE:+.$TERMTYPE}
+# check to make sure file exists
+if [ -f ${DIR_COLORS_CONFIG} ]; then
+    eval "$(dircolors colors.d/${DIR_COLORS_CONFIG})" #Execute dircolors with existing Config file
+fi

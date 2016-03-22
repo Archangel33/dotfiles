@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+confirm () {
+    # call with a prompt string or use a default
+    read -r -t 5 -p "${1:-Are you sure? [y/N]} " response
+    case $response in
+        [yY][eE][sS]|[yY])
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+
+notify (){
+    notify_usage() { echo "notify [[-S SuccessStr] [-F FailString] [-A ActionStr]] Action" 1>&2; exit; }
+
+    local OPTIND o S F A
+    while getopts ":S:F:A:" o; do
+        case "${o}" in
+            S) # succes
+                SUCCESSstr="${OPTARG}"
+                ;;
+            F) # fail
+                FAILstr="${OPTARG}"
+                ;;
+            A) # action
+                ACTIONstr="${OPTARG}"
+                ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    # print action string if provided
+    if [ ! -z "${ACTIONstr}" ]; then
+        printf "${ACTIONstr}"
+    fi
+    # do action
+
+    if [ "$@" -eq 0 ]; then
+        printf "${SUCCESSstr:-Success!}"
+    else
+        printf "${FAILstr:-Fail!}"
+    fi
+
+    return 0
+}
+
+function whichTerm(){
+    basename "/"$(ps -f -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //')
+    return "$?"
+}
+
+ansi-test()
+      {
+      for a in 0 1 4 5 7; do
+              echo "a=$a " 
+              for (( f=0; f<=9; f++ )) ; do
+                      for (( b=0; b<=9; b++ )) ; do
+                              #echo -ne "f=$f b=$b" 
+                              echo -ne "\\033[${a};3${f};4${b}m"
+                              echo -ne "\\\\\\\\033[${a};3${f};4${b}m"
+                              echo -ne "\\033[0m "
+                      done
+              echo
+              done
+              echo
+      done
+      echo
+      }
