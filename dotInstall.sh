@@ -61,8 +61,24 @@ variable_set() {
     fi
 }
 lnif() {
-    if [ -e "$1" ]; then
-        ln -sfn "$1" "$2"
+    local target=${1}
+    local link=${2}
+
+    if [ -e "$target" ]; then
+        if windows; then
+            # tell windows to make a dir/file sym link
+	    target=$(winpath "$target")
+	    link=$(winpath "$link")
+	    echo "target: ${target}"
+	    echo "link: ${link}"
+            if [[ -d "$target" ]]; then # dir
+                cmd <<< "mklink /D \"${link}\" \"${target}\"" > /dev/null
+            else # file
+                cmd <<< "mklink \"${link}\" \"${target}\"" > /dev/null
+            fi
+        else
+            ln -sfn "$target" "$link"
+        fi
     fi
     ret="$?"
 }
@@ -71,6 +87,22 @@ dir_must_exist() {
         mkdir -p $1
     fi
     ret="$?"
+}
+windows() {
+    [[ -n "$WINDIR" ]]
+}
+winpath() {
+    echo "$1" \
+    | sed \
+      -e 's|^/\(.\)/|\1:\\|g' \
+      -e 's|/|\\|g'
+}
+
+unixpath() {
+    echo "$1" \
+    | sed -r \
+      -e 's/\\/\//g' \
+      -e 's/^([^:]+):/\/\1/'
 }
 
 ###### Variables {{{1
@@ -148,8 +180,8 @@ setup_vundle() {
     vim \
         -u "$1/$2" \
         "+set nomore" \
-        "+BundleInstall!" \
-        "+BundleClean" \
+        "+VundleInstall!" \
+        "+VundleClean" \
         "+qall"
 
     export SHELL="$system_shell"
@@ -158,8 +190,10 @@ setup_vundle() {
 }
 
 setup_bash(){
-    msg "Sourcing $1"
-    source $1
+    if [[ -e $1 ]]; then
+    	msg "Sourcing $1"
+    	source $1
+    fi
 }
 
 ################################ MAIN(){{{1
