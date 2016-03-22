@@ -1,6 +1,113 @@
 " Modeline and Notes {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
-"
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=9 foldmethod=marker spell:
+" }
+
+" 1 important {
+
+" }
+
+" 2 moving around {
+
+" }
+
+" 3 tags {
+
+" }
+
+" 4 displaying text
+
+" }
+
+" 5 syntax, highlighting and spelling
+
+" }
+
+" 6 multiple windows
+
+" }
+
+" 7 multiple tab pages
+
+" }
+
+" 8 terminal
+
+" }
+
+" 9 using the mouse
+
+" }
+
+" 10 GUI
+
+" }
+
+" 11 printing
+
+" }
+
+" 12 messages and info
+
+" }
+
+" 13 selecting text
+
+" }
+
+" 14 editing text
+
+" }
+
+" 15 tabs and indenting
+
+" }
+
+" 16 folding
+
+" }
+
+" 17 diff mode
+
+" }
+
+" 18 mapping
+
+" }
+
+"19 reading and writing files
+
+" }
+
+"20 the swap file
+
+" }
+
+"21 command line editing
+
+" }
+
+"22 executing external commands
+
+" }
+
+"23 running make and jumping to errors
+
+" }
+
+"24 system specific
+
+" }
+
+"25 language specific
+
+" }
+
+"26 multi-byte characters
+
+" }
+
+"27 various
+
 " }
 
 " Environment {
@@ -41,22 +148,16 @@
 
     " file lets {
         let g:vimrcDir="~/.vim/rc/"
-        let g:vimrcBefore="~/.vim/rc/.vimrc.before"
-        let g:vimrcBeforeLocal="~/.vim/rc/.vimrc.before.local"
-        let g:vimrcBundles="~/.vim/rc/.vimrc.bundles"
-        let g:vimrcBundlesLocal="~/.vim/rc/.vimrc.bundles.local"
+        let g:vimrcBundles="~/.vim/rc/vimrc.bundles"
         let g:vimrc="~/.vimrc"
-        let g:vimrcLocal="~/.vim/rc/.vimrc.local"
-        let g:gvimrcLocal="~/.vim/rc/.gvimrc.local"
+        "let g:vimrcLocal="~/.vim/rc/.vimrc.local"
+        "let g:gvimrcLocal="~/.vim/rc/.gvimrc.local"
     " }
 
 " }
-
-" Use before config if available {
-    if filereadable(expand(g:vimrcBefore))
-        execute "source " . g:vimrcBefore
-    endif
-" }
+    let g:airline_powerline_fonts = 1
+    let g:airline_inactive_collapse = 1
+    let g:airline#extensions#tabline#enabled = 1
 
 " Use bundles config {
     if filereadable(expand(g:vimrcBundles))
@@ -157,17 +258,16 @@
         let g:solarized_termtrans=1
         let g:solarized_contrast="normal"
         let g:solarized_visibility="normal"
-        color solarized             " Load a colorscheme
+        colorscheme solarized             " Load a colorscheme
     endif
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
-
     set cursorline                  " Highlight current line
 
     highlight clear SignColumn      " SignColumn should match background
     highlight clear LineNr          " Current line number row will have same background color in relative mode
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
+    highlight clear CursorLineNr    " Remove highlight color from current line number
 
     if has('cmdline_info')
         set ruler                   " Show the ruler
@@ -224,11 +324,7 @@
     "set matchpairs+=<:>             " Match, to be used with %
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
-    " Remove trailing whitespaces and ^M chars
-    " To disable the stripping of whitespace, add the following to your
-    " .vimrc.before.local file:
-    "   let g:spf13_keep_trailing_whitespace = 1
-    autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:spf13_keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
+    autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,vim,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
     "autocmd FileType go autocmd BufWritePre <buffer> Fmt
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
     autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
@@ -258,22 +354,6 @@
         let maplocalleader = '_'
     else
         let maplocalleader=g:spf13_localleader
-    endif
-
-    " The default mappings for editing and applying the spf13 configuration
-    " are <leader>ev and <leader>sv respectively. Change them to your preference
-    " by adding the following to your .vimrc.before.local file:
-    "   let g:spf13_edit_config_mapping='<leader>ec'
-    "   let g:spf13_apply_config_mapping='<leader>sc'
-    if !exists('g:spf13_edit_config_mapping')
-        let s:spf13_edit_config_mapping = '<leader>ev'
-    else
-        let s:spf13_edit_config_mapping = g:spf13_edit_config_mapping
-    endif
-    if !exists('g:spf13_apply_config_mapping')
-        let s:spf13_apply_config_mapping = '<leader>sv'
-    else
-        let s:spf13_apply_config_mapping = g:spf13_apply_config_mapping
     endif
 
     " Easier moving in tabs and windows
@@ -375,9 +455,8 @@
 
     " Most prefer to toggle search highlighting rather than clear the current
     " search results. To clear search highlighting rather than toggle it on
-    " and off, add the following to your .vimrc.before.local file:
-    "   let g:spf13_clear_search_highlight = 1
-    if exists('g:spf13_clear_search_highlight')
+    let g:clear_search_highlight = 1
+    if exists('g:clear_search_highlight')
         nmap <silent> <leader>/ :nohlsearch<CR>
     else
         nmap <silent> <leader>/ :set invhlsearch<CR>
@@ -526,7 +605,7 @@
     " }
 
     " Ctags {
-        set tags=./tags;/,~/.vimtags
+        set tags+=./tags;/,~/.vimtags,.vim/rc/tags
 
         " Make tags placed in .git/tags file available in all levels of a repository
         let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
@@ -543,7 +622,6 @@
 
     " SnipMate {
         " Setting the author var
-        " If forking, please overwrite in your .vimrc.local file
         let g:snips_author = 'Michael Reed <Michael.Reed33@gmail.com>'
     " }
 
@@ -1029,12 +1107,7 @@
             if !exists('g:airline_theme')
                 let g:airline_theme = 'solarized'
             endif
-            if !exists('g:airline_powerline_fonts')
-                " Use the default set of separators with a few customizations
-                let g:airline_left_sep='›'  " Slightly fancier than '>'
-                let g:airline_right_sep='‹' " Slightly fancier than '<'
-            endif
-        endif
+       endif
     " }
 
 " }
@@ -1078,16 +1151,9 @@
             let dir_list['undo'] = 'undodir'
         endif
 
-        " To specify a different directory in which to place the vimbackup,
-        " vimviews, vimundo, and vimswap files/directories, add the following to
-        " your .vimrc.before.local file:
-        "   let g:spf13_consolidated_directory = <full path to desired directory>
-        "   eg: let g:spf13_consolidated_directory = $HOME . '/.vim/'
-        if exists('g:spf13_consolidated_directory')
-            let common_dir = g:spf13_consolidated_directory . prefix
-        else
-            let common_dir = parent . '/.' . prefix
-        endif
+        " Specify a different directory in which to place the vimbackup,
+        " vimviews, vimundo, and vimswap files/directories
+        let common_dir = $HOME . '/.vim/' . prefix
 
         for [dirname, settingname] in items(dir_list)
             let directory = common_dir . dirname . '/'
@@ -1163,35 +1229,169 @@
         execute a:command . " " . expand(a:file, ":p")
     endfunction
 
-    function! s:EditSpf13Config()
+    function! s:EditConfig()
         call <SID>ExpandFilenameAndExecute("tabedit", g:vimrc)
-        call <SID>ExpandFilenameAndExecute("vsplit", g:vimrcBefore)
         call <SID>ExpandFilenameAndExecute("vsplit", g:vimrcBundles)
-
-        execute bufwinnr(".vimrc") . "wincmd w"
-        call <SID>ExpandFilenameAndExecute("split", g:vimrcLocal)
-        wincmd l
-        call <SID>ExpandFilenameAndExecute("split", g:vimrcBeforeLocal)
-        wincmd l
-        call <SID>ExpandFilenameAndExecute("split", g:vimrcBundlesLocal)
-
-        execute bufwinnr(".vimrc.local") . "wincmd w"
     endfunction
 
-    execute "noremap " . s:spf13_edit_config_mapping . " :call <SID>EditSpf13Config()<CR>"
-    execute "noremap " . s:spf13_apply_config_mapping . " :source ~/.vimrc<CR>"
+    " edit and save vimrc files
+    noremap <leader>ev :call <SID>EditConfig()<CR>
+    noremap <leader>sv :source ~/.vimrc<CR>
 " }
 
 " Use local vimrc if available {
-    if filereadable(expand(g:vimrcLocal))
-        execute "source " . g:vimrcLocal
-    endif
+"    if filereadable(expand(g:vimrcLocal))
+"        execute 'source ' . g:vimrcLocal
+"    endif
 " }
 
 " Use local gvimrc if available and gui is running {
-    if has('gui_running')
-        if filereadable(expand(g:gvimrcLocal))
-            execute "source " . g:gvimrcLocal
-       endif
-    endif
+"    if has('gui_running')
+"        if filereadable(expand(g:gvimrcLocal))
+"            execute 'source ' . g:gvimrcLocal
+"       endif
+"    endif
 " }
+
+" Use these as section headers
+" 1 important
+" 2 moving around, searching and patterns
+" 3 tags
+" 4 displaying text
+" 5 syntax, highlighting and spelling
+" 6 multiple windows
+" 7 multiple tab pages
+" 8 terminal
+" 9 using the mouse
+"10 GUI
+"11 printing
+"12 messages and info
+"13 selecting text
+"14 editing text
+"15 tabs and indenting
+"16 folding
+"17 diff mode
+"18 mapping
+"19 reading and writing files
+"20 the swap file
+"21 command line editing
+"22 executing external commands
+"23 running make and jumping to errors
+"24 system specific
+"25 language specific
+"26 multi-byte characters
+"27 various
+
+
+
+
+set guifont=Sauce_Code_Powerline:h10:cANSI
+set encoding=utf8
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+
+" set cursor to be a block
+set gcr=a:block
+
+" mode aware cursors
+set gcr+=o:hor50-Cursor
+set gcr+=n:Cursor
+set gcr+=i-ci-sm:InsertCursor
+set gcr+=r-cr:ReplaceCursor-hor20
+set gcr+=c:CommandCursor
+set gcr+=v-ve:VisualCursor
+
+set gcr+=a:blinkon0
+
+hi InsertCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=37  guibg=#2aa198
+hi VisualCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=125 guibg=#d33682
+hi ReplaceCursor ctermfg=15 guifg=#fdf6e3 ctermbg=65  guibg=#dc322f
+hi CommandCursor ctermfg=15 guifg=#fdf6e3 ctermbg=166 guibg=#cb4b16
+
+" if compiled with colorcolumn
+if (exists('+colorcolumn'))
+    set colorcolumn=80
+endif
+
+" Set leader o to insert lines before or after current line
+" without exiting Normal mode
+nnoremap <leader>o o<ESC>
+nnoremap <leader>O O<ESC>
+
+" For local replace
+nnoremap gr gd[{V%::s/<C-R>///gc<left><left><left>
+
+" For global replace
+nnoremap gR gD:%s/<C-R>///gc<left><left><left>
+
+"  -- / == to left/right through tabs
+noremap -- :bp<CR>
+noremap == :bn<CR>
+noremap <leader>h <C-w>h
+noremap <leader>j <C-w>j
+noremap <leader>k <C-w>k
+noremap <leader>l <C-w>l
+
+" set colors in log files
+"autocmd BufNewFile,BufReadPost *.log :set filetype=messages
+"autocmd BufNewFile,BufReadPost /var/log/* :set filetype=messages
+
+" define function to confirm creating a directory if it doesn't exist
+function! MkDirAndConfirm(path, dir)
+    silent doautocmd BufWritePre
+
+    " Directory exists, :write and return
+    if isdirectory(a:dir)
+        execute 'write ' . a:path
+        silent doautocmd BufWritePost
+        return
+    endif
+
+    " Ask for confirmation to create this directory
+    echohl Question
+    echo "Create directory '". a:dir . "' [y/N]? "
+    echohl None
+
+    let response = nr2char(getchar())
+    " mkdir() and :write if we want to make the directory
+    if response ==? "y"
+        call mkdir(a:dir, "p")
+        execute 'write ' . a:path
+        silent doautocmd BufWritePost
+    endif
+endfunction
+" call MkDirAndConfirm on buff write
+autocmd BufWriteCmd * call MkDirAndConfirm(expand("<amatch>:p"), expand("<amatch>:p:h"))
+
+" folding
+augroup vimrc
+  au BufReadPre * setlocal foldmethod=indent
+  au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
+augroup END
+
+" this may need to go somewhere like '~/.vim/bundle/[nerdTree dir]/[nerdTree
+" plugin]/[my mappings].vim'
+"
+"let g:NERDTreeCustomQuickCommands = '1'
+"
+"call NERDTreeAddKeyMap({
+"\ 'key': 'cqc',
+"            \ 'scope': 'all',
+"            \ 'callback': 'NERDTreeCustomQuickCommandsToggle',
+"            \ 'quickhelpText': 'Toggle custom commands'})
+"
+"function! NERDTreeCustomQuickCommandsToggle()
+"    let g:NERDTreeCustomQuickCommands = g:NERDTreeCustomQuickCommands ? 0 : 1
+"    echomsg (g:NERDTreeCustomQuickCommands ? 'Enabled' : 'Disabled') . 'Custom Quick Commands'
+"endfunction
+"
+"call NERDTreeAddKeyMap({
+"            \ 'key': 'a',
+"            \ 'scope': 'DirNode',
+"            \ 'callback': 'NERDTreeCustomNewFile',
+"            \ 'quickhelpText': 'create new file and edit'})
+"
+"function! NERDTreeCustomNewFile(dirnode)
+"    let l:path=a:dirnode.path.str()
+"    " todo: add logic to ask for a file name and use that to open a new buffer
+"endfunction

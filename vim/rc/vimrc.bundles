@@ -1,24 +1,5 @@
 " Modeline and Notes {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
-"
-"                    __ _ _____              _
-"         ___ _ __  / _/ |___ /      __   __(_)_ __ ___
-"        / __| '_ \| |_| | |_ \ _____\ \ / /| | '_ ` _ \
-"        \__ \ |_) |  _| |___) |_____|\ V / | | | | | | |
-"        |___/ .__/|_| |_|____/        \_/  |_|_| |_| |_|
-"            |_|
-"
-"   This is the personal .vimrc.bundles file of Steve Francia.
-"   While much of it is beneficial for general use, I would
-"   recommend picking out the parts you want and understand.
-"
-"   This file imports the various plugins of spf13. If you
-"   wish to alter which groups are imported, see vimrc.before.
-"   If you wish to add or remove individual bundles, create
-"   ~/.vimrc.bundles.local and `Bundle` or `UnBundle` as needed
-"   from there.
-"
-"   You can find me at http://spf13.com
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=999999999 foldmethod=marker spell:
 " }
 
 " Environment {
@@ -88,12 +69,8 @@
         endif
     " }
 
-    " In your .vimrc.before.local file
     " list only the plugin groups you will use
-    if !exists('g:spf13_bundle_groups')
-        let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc',]
-    endif
-
+    let g:spf13_bundle_groups=['general', 'writing', 'programming', 'youcompleteme', 'python', 'javascript', 'scala', 'haskell', 'html', 'misc']
     " To override all the included bundles, add the following to your
     " .vimrc.bundles.local file:
     "   let g:override_spf13_bundles = 1
@@ -112,6 +89,7 @@
             Bundle 'tacahiroy/ctrlp-funky'
             Bundle 'terryma/vim-multiple-cursors'
             Bundle 'vim-scripts/sessionman.vim'
+            Bundle 'vim-scripts/showmarks.vim'
             Bundle 'matchit.zip'
             if (has("python") || has("python3")) && exists('g:spf13_use_powerline') && !exists('g:spf13_use_old_powerline')
                 Bundle 'Lokaltog/powerline', {'rtp':'/powerline/bindings/vim'}
@@ -298,8 +276,3 @@
 
 " }
 
-" Use local bundles config if available {
-    if filereadable(expand(g:vimrcBundlesLocal))
-        execute "source " . g:vimrcBundlesLocal
-    endif
-" }
