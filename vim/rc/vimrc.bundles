@@ -70,7 +70,16 @@
     " }
 
     " list only the plugin groups you will use
-    let g:spf13_bundle_groups=['general', 'writing', 'programming', 'youcompleteme', 'python', 'javascript', 'scala', 'haskell', 'html', 'misc']
+    let g:spf13_bundle_groups=[
+                \ 'general',
+                \ 'writing',
+                \ 'programming',
+                \ 'python',
+                \ 'javascript',
+                \ 'scala',
+                \ 'html',
+                \ 'misc'
+                \ ]
     " To override all the included bundles, add the following to your
     " .vimrc.bundles.local file:
     "   let g:override_spf13_bundles = 1
@@ -78,6 +87,8 @@
 
     " General {
         if count(g:spf13_bundle_groups, 'general')
+            Bundle 'LargeFile'
+            Bundle 'LogViewer'
             Bundle 'scrooloose/nerdtree'
             Bundle 'altercation/vim-colors-solarized'
             Bundle 'spf13/vim-colors'
