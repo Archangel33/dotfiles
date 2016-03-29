@@ -460,7 +460,7 @@
 " Plugins {
 
     " GoLang {
-        if count(g:spf13_bundle_groups, 'go')
+        if count(g:bundle_groups, 'go')
             let g:go_highlight_functions = 1
             let g:go_highlight_methods = 1
             let g:go_highlight_structs = 1
@@ -483,7 +483,7 @@
 
 
     " TextObj Sentence {
-        if count(g:spf13_bundle_groups, 'writing')
+        if count(g:bundle_groups, 'writing')
             augroup textobj_sentence
               autocmd!
               autocmd FileType markdown call textobj#sentence#init()
@@ -494,7 +494,7 @@
     " }
 
     " TextObj Quote {
-        if count(g:spf13_bundle_groups, 'writing')
+        if count(g:bundle_groups, 'writing')
             augroup textobj_quote
                 autocmd!
                 autocmd FileType markdown call textobj#quote#init()
@@ -522,8 +522,6 @@
 
     " OmniComplete {
         " To disable omni complete, add the following to your .vimrc.before.local file:
-        "   let g:spf13_no_omni_complete = 1
-        if !exists('g:spf13_no_omni_complete')
             if has("autocmd") && exists("+omnifunc")
                 autocmd Filetype *
                     \if &omnifunc == "" |
@@ -536,10 +534,6 @@
             hi PmenuThumb  guifg=#F8F8F8 guibg=#8A95A7 gui=NONE ctermfg=lightgray ctermbg=darkcyan cterm=NONE
 
             " Some convenient mappings
-            "inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
-            if exists('g:spf13_map_cr_omni_complete')
-                inoremap <expr> <CR>     pumvisible() ? "\<C-y>" : "\<CR>"
-            endif
             inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
             inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
             inoremap <expr> <C-d>      pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
@@ -548,7 +542,6 @@
             " Automatically open and close the popup menu / preview window
             au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
             set completeopt=menu,preview,longest
-        endif
     " }
 
     " Ctags {
@@ -710,7 +703,7 @@
     "}
 
     " YouCompleteMe {
-        if count(g:spf13_bundle_groups, 'youcompleteme')
+        if count(g:bundle_groups, 'youcompleteme')
             let g:acp_enableAtStartup = 0
 
             " enable completion from tags
@@ -738,10 +731,8 @@
             endif
 
             " For snippet_complete marker.
-            if !exists("g:spf13_no_conceal")
-                if has('conceal')
-                    set conceallevel=2 concealcursor=i
-                endif
+            if has('conceal')
+                set conceallevel=2 concealcursor=i
             endif
 
             " Disable the neosnippet preview candidate window
@@ -752,7 +743,7 @@
     " }
 
     " neocomplete {
-        if count(g:spf13_bundle_groups, 'neocomplete')
+        if count(g:bundle_groups, 'neocomplete')
             let g:acp_enableAtStartup = 0
             let g:neocomplete#enable_at_startup = 1
             let g:neocomplete#enable_smart_case = 1
@@ -776,23 +767,8 @@
 
             " Plugin key-mappings {
                 " These two lines conflict with the default digraph mapping of <C-K>
-                if !exists('g:spf13_no_neosnippet_expand')
-                    imap <C-k> <Plug>(neosnippet_expand_or_jump)
-                    smap <C-k> <Plug>(neosnippet_expand_or_jump)
-                endif
-                if exists('g:spf13_noninvasive_completion')
-                    inoremap <CR> <CR>
-                    " <ESC> takes you out of insert mode
-                    inoremap <expr> <Esc>   pumvisible() ? "\<C-y>\<Esc>" : "\<Esc>"
-                    " <CR> accepts first, then sends the <CR>
-                    inoremap <expr> <CR>    pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-                    " <Down> and <Up> cycle like <Tab> and <S-Tab>
-                    inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
-                    inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
-                    " Jump up and down the list
-                    inoremap <expr> <C-d>   pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
-                    inoremap <expr> <C-u>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
-                else
+                imap <C-k> <Plug>(neosnippet_expand_or_jump)
+                smap <C-k> <Plug>(neosnippet_expand_or_jump)
                     " <C-k> Complete Snippet
                     " <C-k> Jump to next snippet point
                     imap <silent><expr><C-k> neosnippet#expandable() ?
@@ -826,7 +802,7 @@
                     " <C-h>, <BS>: close popup and delete backword char.
                     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
                     inoremap <expr><C-y> neocomplete#smart_close_popup()
-                endif
+
                 " <TAB>: completion.
                 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
                 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
@@ -866,7 +842,7 @@
             let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
     " }
     " neocomplcache {
-        elseif count(g:spf13_bundle_groups, 'neocomplcache')
+        elseif count(g:bundle_groups, 'neocomplcache')
             let g:acp_enableAtStartup = 0
             let g:neocomplcache_enable_at_startup = 1
             let g:neocomplcache_enable_camel_case_completion = 1
@@ -893,19 +869,6 @@
                 " These two lines conflict with the default digraph mapping of <C-K>
                 imap <C-k> <Plug>(neosnippet_expand_or_jump)
                 smap <C-k> <Plug>(neosnippet_expand_or_jump)
-                if exists('g:spf13_noninvasive_completion')
-                    inoremap <CR> <CR>
-                    " <ESC> takes you out of insert mode
-                    inoremap <expr> <Esc>   pumvisible() ? "\<C-y>\<Esc>" : "\<Esc>"
-                    " <CR> accepts first, then sends the <CR>
-                    inoremap <expr> <CR>    pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
-                    " <Down> and <Up> cycle like <Tab> and <S-Tab>
-                    inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
-                    inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
-                    " Jump up and down the list
-                    inoremap <expr> <C-d>   pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
-                    inoremap <expr> <C-u>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
-                else
                     imap <silent><expr><C-k> neosnippet#expandable() ?
                                 \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
                                 \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
@@ -939,7 +902,6 @@
                     " <C-h>, <BS>: close popup and delete backword char.
                     inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
                     inoremap <expr><C-y> neocomplcache#close_popup()
-                endif
                 " <TAB>: completion.
                 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
                 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
@@ -967,8 +929,6 @@
     " }
     " Normal Vim omni-completion {
     " To disable omni complete, add the following to your .vimrc.before.local file:
-    "   let g:spf13_no_omni_complete = 1
-        elseif !exists('g:spf13_no_omni_complete')
             " Enable omni-completion.
             autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
             autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
@@ -977,13 +937,11 @@
             autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
             autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
             autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-
-        endif
     " }
 
     " Snippets {
-        if count(g:spf13_bundle_groups, 'neocomplcache') ||
-                    \ count(g:spf13_bundle_groups, 'neocomplete')
+        if count(g:bundle_groups, 'neocomplcache') ||
+                    \ count(g:bundle_groups, 'neocomplete')
 
             " Use honza's snippets.
             let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
@@ -992,11 +950,9 @@
             let g:neosnippet#enable_snipmate_compatibility = 1
 
             " For snippet_complete marker.
-            if !exists("g:spf13_no_conceal")
                 if has('conceal')
                     set conceallevel=2 concealcursor=i
                 endif
-            endif
 
             " Enable neosnippets when using go
             let g:go_snippet_engine = "neosnippet"
@@ -1065,7 +1021,6 @@
     if has('gui_running')
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
-        if !exists("g:spf13_no_big_font")
             if LINUX() && has("gui_running")
                 set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
             elseif OSX() && has("gui_running")
@@ -1073,7 +1028,6 @@
             elseif WINDOWS() && has("gui_running")
                 set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
             endif
-        endif
     else
         if &term == 'xterm' || &term == 'screen'
             set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
