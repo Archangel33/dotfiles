@@ -1143,20 +1143,6 @@ elseif count(g:bundle_groups, 'neocomplcache')
     noremap <leader>sv :source ~/.vimrc<CR>
     " }
 
-    " Use local vimrc if available {
-    "    if filereadable(expand(g:vimrcLocal))
-    "        execute 'source ' . g:vimrcLocal
-    "    endif
-    " }
-
-    " Use local gvimrc if available and gui is running {
-    "    if has('gui_running')
-    "        if filereadable(expand(g:gvimrcLocal))
-    "            execute 'source ' . g:gvimrcLocal
-    "       endif
-    "    endif
-    " }
-
     set encoding=utf8
     let g:airline_powerline_fonts = 1
     let g:airline#extensions#tabline#enabled = 1
