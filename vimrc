@@ -114,12 +114,12 @@
 
 " Identify platform {
 silent function! OSX()
-return has('macunix')
-        endfunction
-        silent function! LINUX()
-        return has('unix') && !has('macunix') && !has('win32unix')
-    endfunction
-    silent function! WINDOWS()
+    return has('macunix')
+endfunction
+silent function! LINUX()
+    return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+silent function! WINDOWS()
     return  (has('win32') || has('win64'))
 endfunction
 " }
@@ -149,8 +149,6 @@ endif
 let g:vimrcDir="~/.vim/rc/"
 let g:vimrcBundles="~/.vim/rc/vimrc.bundles"
 let g:vimrc="~/.vimrc"
-"let g:vimrcLocal="~/.vim/rc/.vimrc.local"
-"let g:gvimrcLocal="~/.vim/rc/.gvimrc.local"
 " }
 
 " }
@@ -261,7 +259,7 @@ endif
 if has('statusline')
     set laststatus=2
 
-    " Broken down into easily includeable segments
+    " build statusline
     set statusline=%<%f\                     " Filename
     set statusline+=%w%h%m%r                 " Options
     set statusline+=%{fugitive#statusline()} " Git Hotness
@@ -304,14 +302,16 @@ set splitbelow                  " Puts new split windows to the bottom of the cu
 "set matchpairs+=<:>             " Match, to be used with %
 set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
 "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
+
+autocmd FileType ruby let b:noStripTrailingWhitespace=1
+autocmd FileType * autocmd BufWritePre <buffer> StripTrailingWhitespace()
+
+" Filetype lines best in a plugin but here for now.
 autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,vim,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 "autocmd FileType go autocmd BufWritePre <buffer> Fmt
 autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
 autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
-" preceding Filetype lines best in a plugin but here for now.
-
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
-
 " Workaround vim-commentary for Haskell
 autocmd FileType haskell setlocal commentstring=--\ %s
 " Workaround broken colour highlighting in Haskell
@@ -702,275 +702,7 @@ if isdirectory(expand("~/.vim/bundle/vim-fugitive/"))
 endif
 "}
 
-" YouCompleteMe {
-if count(g:bundle_groups, 'youcompleteme')
-    let g:acp_enableAtStartup = 0
 
-    " enable completion from tags
-    let g:ycm_collect_identifiers_from_tags_files = 1
-
-    " remap Ultisnips for compatibility for YCM
-    let g:UltiSnipsExpandTrigger = '<C-j>'
-    let g:UltiSnipsJumpForwardTrigger = '<C-j>'
-    let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-
-    " Enable omni completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-
-    " Haskell post write lint and check with ghcmod
-    " $ `cabal install ghcmod` if missing and ensure
-    " ~/.cabal/bin is in your $PATH.
-    if !executable("ghcmod")
-        autocmd BufWritePost *.hs GhcModCheckAndLintAsync
-    endif
-
-    " For snippet_complete marker.
-    if has('conceal')
-        set conceallevel=2 concealcursor=i
-    endif
-
-    " Disable the neosnippet preview candidate window
-    " When enabled, there can be too much visual noise
-    " especially when splits are used.
-    set completeopt-=preview
-endif
-" }
-
-" neocomplete {
-if count(g:bundle_groups, 'neocomplete')
-    let g:acp_enableAtStartup = 0
-    let g:neocomplete#enable_at_startup = 1
-    let g:neocomplete#enable_smart_case = 1
-    let g:neocomplete#enable_auto_delimiter = 1
-    let g:neocomplete#max_list = 15
-    let g:neocomplete#force_overwrite_completefunc = 1
-
-
-    " Define dictionary.
-    let g:neocomplete#sources#dictionary#dictionaries = {
-                \ 'default' : '',
-                \ 'vimshell' : $HOME.'/.vimshell_hist',
-                \ 'scheme' : $HOME.'/.gosh_completions'
-                \ }
-
-    " Define keyword.
-    if !exists('g:neocomplete#keyword_patterns')
-        let g:neocomplete#keyword_patterns = {}
-    endif
-    let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-    " Plugin key-mappings {
-    " These two lines conflict with the default digraph mapping of <C-K>
-    imap <C-k> <Plug>(neosnippet_expand_or_jump)
-    smap <C-k> <Plug>(neosnippet_expand_or_jump)
-    " <C-k> Complete Snippet
-    " <C-k> Jump to next snippet point
-    imap <silent><expr><C-k> neosnippet#expandable() ?
-                \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
-                \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
-    smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
-
-    inoremap <expr><C-g> neocomplete#undo_completion()
-    inoremap <expr><C-l> neocomplete#complete_common_string()
-    "inoremap <expr><CR> neocomplete#complete_common_string()
-
-    " <CR>: close popup
-    " <s-CR>: close popup and save indent.
-    inoremap <expr><s-CR> pumvisible() ? neocomplete#smart_close_popup()."\<CR>" : "\<CR>"
-
-    function! CleverCr()
-        if pumvisible()
-            if neosnippet#expandable()
-                let exp = "\<Plug>(neosnippet_expand)"
-                return exp . neocomplete#smart_close_popup()
-            else
-                return neocomplete#smart_close_popup()
-            endif
-        else
-            return "\<CR>"
-        endif
-    endfunction
-
-    " <CR> close popup and save indent or expand snippet
-    imap <expr> <CR> CleverCr()
-    " <C-h>, <BS>: close popup and delete backword char.
-    inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><C-y> neocomplete#smart_close_popup()
-
-    " <TAB>: completion.
-    inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
-
-    " Courtesy of Matteo Cavalleri
-
-    function! CleverTab()
-        if pumvisible()
-            return "\<C-n>"
-        endif
-        let substr = strpart(getline('.'), 0, col('.') - 1)
-        let substr = matchstr(substr, '[^ \t]*$')
-        if strlen(substr) == 0
-            " nothing to match on empty string
-            return "\<Tab>"
-        else
-            " existing text matching
-            if neosnippet#expandable_or_jumpable()
-                return "\<Plug>(neosnippet_expand_or_jump)"
-            else
-                return neocomplete#start_manual_complete()
-            endif
-        endif
-    endfunction
-
-    imap <expr> <Tab> CleverTab()
-    " }
-
-    " Enable heavy omni completion.
-    if !exists('g:neocomplete#sources#omni#input_patterns')
-        let g:neocomplete#sources#omni#input_patterns = {}
-    endif
-    let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-    let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-    let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-    let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-    let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-    " }
-    " neocomplcache {
-elseif count(g:bundle_groups, 'neocomplcache')
-    let g:acp_enableAtStartup = 0
-    let g:neocomplcache_enable_at_startup = 1
-    let g:neocomplcache_enable_camel_case_completion = 1
-    let g:neocomplcache_enable_smart_case = 1
-    let g:neocomplcache_enable_underbar_completion = 1
-    let g:neocomplcache_enable_auto_delimiter = 1
-    let g:neocomplcache_max_list = 15
-    let g:neocomplcache_force_overwrite_completefunc = 1
-
-    " Define dictionary.
-    let g:neocomplcache_dictionary_filetype_lists = {
-                \ 'default' : '',
-                \ 'vimshell' : $HOME.'/.vimshell_hist',
-                \ 'scheme' : $HOME.'/.gosh_completions'
-                \ }
-
-    " Define keyword.
-    if !exists('g:neocomplcache_keyword_patterns')
-        let g:neocomplcache_keyword_patterns = {}
-    endif
-    let g:neocomplcache_keyword_patterns._ = '\h\w*'
-
-    " Plugin key-mappings {
-    " These two lines conflict with the default digraph mapping of <C-K>
-    imap <C-k> <Plug>(neosnippet_expand_or_jump)
-    smap <C-k> <Plug>(neosnippet_expand_or_jump)
-    imap <silent><expr><C-k> neosnippet#expandable() ?
-                \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
-                \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
-    smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
-
-    inoremap <expr><C-g> neocomplcache#undo_completion()
-    inoremap <expr><C-l> neocomplcache#complete_common_string()
-    "inoremap <expr><CR> neocomplcache#complete_common_string()
-
-    function! CleverCr()
-        if pumvisible()
-            if neosnippet#expandable()
-                let exp = "\<Plug>(neosnippet_expand)"
-                return exp . neocomplcache#close_popup()
-            else
-                return neocomplcache#close_popup()
-            endif
-        else
-            return "\<CR>"
-        endif
-    endfunction
-
-    " <CR> close popup and save indent or expand snippet
-    imap <expr> <CR> CleverCr()
-
-    " <CR>: close popup
-    " <s-CR>: close popup and save indent.
-    inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup()."\<CR>" : "\<CR>"
-    "inoremap <expr><CR> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-
-    " <C-h>, <BS>: close popup and delete backword char.
-    inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-    inoremap <expr><C-y> neocomplcache#close_popup()
-    " <TAB>: completion.
-    inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
-    " }
-
-    " Enable omni completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-
-    " Enable heavy omni completion.
-    if !exists('g:neocomplcache_omni_patterns')
-        let g:neocomplcache_omni_patterns = {}
-    endif
-    let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-    let g:neocomplcache_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-    let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-    let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-    let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-    let g:neocomplcache_omni_patterns.go = '\h\w*\.\?'
-    " }
-    " Normal Vim omni-completion {
-    " To disable omni complete, add the following to your .vimrc.before.local file:
-    " Enable omni-completion.
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-    autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-    " }
-
-    " Snippets {
-    if count(g:bundle_groups, 'neocomplcache') ||
-                \ count(g:bundle_groups, 'neocomplete')
-
-        " Use honza's snippets.
-        let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-
-        " Enable neosnippet snipmate compatibility mode
-        let g:neosnippet#enable_snipmate_compatibility = 1
-
-        " For snippet_complete marker.
-        if has('conceal')
-            set conceallevel=2 concealcursor=i
-        endif
-
-        " Enable neosnippets when using go
-        let g:go_snippet_engine = "neosnippet"
-
-        " Disable the neosnippet preview candidate window
-        " When enabled, there can be too much visual noise
-        " especially when splits are used.
-        set completeopt-=preview
-    endif
-    " }
-
-    " FIXME: Isn't this for Syntastic to handle?
-    " Haskell post write lint and check with ghcmod
-    " $ `cabal install ghcmod` if missing and ensure
-    " ~/.cabal/bin is in your $PATH.
-    if !executable("ghcmod")
-        autocmd BufWritePost *.hs GhcModCheckAndLintAsync
-    endif
 
     " UndoTree {
     if isdirectory(expand("~/.vim/bundle/undotree/"))
@@ -1007,9 +739,7 @@ elseif count(g:bundle_groups, 'neocomplcache')
     " See `:echo g:airline_theme_map` for some more choices
     " Default in terminal vim is 'dark'
     if isdirectory(expand("~/.vim/bundle/vim-airline/"))
-        if !exists('g:airline_theme')
             let g:airline_theme = 'solarized'
-        endif
     endif
     " }
 
@@ -1026,7 +756,7 @@ elseif count(g:bundle_groups, 'neocomplcache')
         elseif OSX() && has("gui_running")
             set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
         elseif WINDOWS() && has("gui_running")
-            set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+            set guifont=Sauce_Code_Powerline:h9:cANSI,Menlo:h10,Consolas:h10,Courier_New:h10
         endif
     else
         if &term == 'xterm' || &term == 'screen'
@@ -1091,6 +821,10 @@ elseif count(g:bundle_groups, 'neocomplcache')
 
     " Strip whitespace {
     function! StripTrailingWhitespace()
+        " Only if b:noStripTrailingWhitespace variable isn't set
+        if exists('b:noStripTrailingWhitespace')
+            return
+        endif
         " Preparation: save last search, and cursor position.
         let _s=@/
         let l = line(".")
@@ -1144,9 +878,6 @@ elseif count(g:bundle_groups, 'neocomplcache')
     " }
 
     set encoding=utf8
-    let g:airline_powerline_fonts = 1
-    let g:airline#extensions#tabline#enabled = 1
-
     " set cursor to be a block
     set gcr=a:block
 
