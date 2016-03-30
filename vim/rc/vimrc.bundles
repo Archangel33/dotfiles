@@ -36,7 +36,7 @@ endif
 " Setup Bundle Support {
 " The next three lines ensure that the ~/.vim/bundle/ system works
 filetype off
-set rtp+=~/.vim/bundle/vundle
+set rtp+=~/.vim/bundle/vundle.vim
 call vundle#rc()
 " }
 
@@ -55,7 +55,7 @@ com! -nargs=+         UnBundle
 " Bundles {
 
 " Deps {
-Bundle 'gmarik/vundle'
+Bundle 'VundleVim/Vundle.vim'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
 if executable('ag')
