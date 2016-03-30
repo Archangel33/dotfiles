@@ -118,7 +118,7 @@ DOTFILES="vimrc gitconfig gitignore vim bash bashrc"                            
 [ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/vundle"                          # Path to bundles dir for Vundle
 [ -z "$VUNDLE_URI" ]    && VUNDLE_URI="https://github.com/gmarik/vundle.git"              # URI for Vundle plugin for vim
 [ -z "$VUNDLE_branch" ] && VUNDLE_branch="master"                                            # branch from pull vundle frome
-[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="vim/rc/.vimrc.bundles.local"
+[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="vim/rc/bundles.vim"
 
 [ -z "$BASHRC_path" ]   && BASHRC_path="$HOME/.bashrc"
 
