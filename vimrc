@@ -232,10 +232,10 @@ endif
 " Vim UI {{{
 
 if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
-    let g:solarized_termcolors=256
-    let g:solarized_termtrans=1
-    let g:solarized_contrast="normal"
-    let g:solarized_visibility="normal"
+    let g:solarized_termcolors=16
+    "let g:solarized_termtrans=1
+    "let g:solarized_contrast="normal"
+    "let g:solarized_visibility="normal"
     colorscheme solarized             " Load a colorscheme
 endif
 
@@ -273,6 +273,7 @@ set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
 set scrolljump=5                " Lines to scroll when cursor leaves screen
 set scrolloff=3                 " Minimum lines to keep above and below cursor
 set foldenable                  " Auto fold code
+set foldlevelstart=10           " set foldlevel on buffer open
 set list
 set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
@@ -288,24 +289,31 @@ set gcr+=c:CommandCursor
 set gcr+=v-ve:VisualCursor
 set gcr+=a:blinkon0
 
-hi InsertCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=37  guibg=#2aa198
-hi VisualCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=125 guibg=#d33682
-hi ReplaceCursor ctermfg=15 guifg=#fdf6e3 ctermbg=65  guibg=#dc322f
-hi CommandCursor ctermfg=15 guifg=#fdf6e3 ctermbg=166 guibg=#cb4b16
+hi Cursor        ctermfg=15 guifg=#fdf6e3 ctermbg=2   guibg=#859900
+hi InsertCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=3   guibg=#b58900
+hi VisualCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=5   guibg=#d33682
+hi ReplaceCursor ctermfg=15 guifg=#fdf6e3 ctermbg=1   guibg=#dc322f
+hi CommandCursor ctermfg=15 guifg=#fdf6e3 ctermbg=9   guibg=#cb4b16
 
 set tabpagemax=15               " Only show 15 tabs
 set showmode                    " Display the current mode
 set cursorline                  " Highlight current line
 
-highlight clear SignColumn      " SignColumn should match background
-highlight clear LineNr          " Current line number row will have same background color in relative mode
-highlight clear CursorLineNr    " Remove highlight color from current line number
+hi clear LineNr          " Current line number row will have same background color in relative mode
+hi clear CursorLineNr    " Remove highlight color from current line number
+hi CursorLine ctermbg=0
 
 " if compiled with colorcolumn
 if (exists('+colorcolumn'))
     set colorcolumn=80
+    hi ColorColumn ctermbg=0
 endif
 
+hi clear SignColumn      " SignColumn should match background
+"hi GitGutterAdd
+"hi GitGutterChange
+"hi GitGutterDelete
+"hi GitGutterChangeDelete
 
 " }}}
 
@@ -325,7 +333,8 @@ set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
 "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
 
 autocmd FileType ruby let b:noStripTrailingWhitespace=1
-autocmd FileType * autocmd BufWritePre <buffer> StripTrailingWhitespace()
+autocmd FileType ruby let b:noAutoStripTrailingWhitespace=1
+autocmd FileType * autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 
 "autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,vim,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 
@@ -681,7 +690,7 @@ endif
 
 " Rainbow {{{
 if isdirectory(expand("~/.vim/bundle/rainbow/"))
-    let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+    let g:rainbow_active = 0 "0 if you want to enable it later via :RainbowToggle
 endif
 " }}}
 
