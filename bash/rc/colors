@@ -1,5 +1,6 @@
-#!/usr/bin/env bash
+BGWHT="\033[47m" # bg white
 
+numcolors=$(tput colors)
 # ANSI color codes
 RS="\033[0m"       # reset
 BC="\033[1m"       # bright color
@@ -28,10 +29,7 @@ BGYEL="\033[43m" # bg yellow
 BGBLU="\033[44m" # bg blue
 BGMAG="\033[45m" # bg magenta
 BGCYN="\033[46m" # bg cyan
-BGWHT="\033[47m" # bg white
 
-numcolors=$(tput colors)
-# COLOR Codes
 Cbase03="\033[8m"
 Cbase02="\033[16m"
 Cbase01="\033[10m"
