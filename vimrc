@@ -911,6 +911,7 @@ endfunction
 function! s:EditConfig()
     call <SID>ExpandFilenameAndExecute("tabedit", g:vimrc)
     call <SID>ExpandFilenameAndExecute("vsplit", g:vimrcBundles)
+    execute ":wincmd p"
 endfunction
 
 " edit and save vimrc files
