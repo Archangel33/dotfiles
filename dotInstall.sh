@@ -141,9 +141,16 @@ do_backup() {
     return $ret
 }
 
+find_symlinks(){
+    $(find -H "$DOTFILES_ROOT" -name '*.symlink')
+}
+
 create_symlinks(){
+    debug "Aggregating Symlinks"
+    local symlinksToBe=$1
+    local dotsymlinkNodes=find_symlinks
     msg "Creating Symlinks"
-    for file in $1; do
+    for file in symlinksToBe; do
         action="~/.$file to $2/$file"
         vrb "Symlinking: ln $2/$file $(echo ~/.$file)"
         lnif $2/$file ~/.$file
