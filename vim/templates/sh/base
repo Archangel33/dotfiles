@@ -1,0 +1,193 @@
+#!/bin/bash
+#================================================================
+# HEADER
+#================================================================
+#% SYNOPSIS
+#+    ${SCRIPT_NAME} [-h | --help ] [-v | --verbose ] [ --version ]
+#%
+#% DESCRIPTION
+#%    ${SCRIPT_NAME} <!DESC>
+#%
+#% OPTIONS
+#%    -h, --help                  Print this help, cease further execution
+#%    --log-level                 Sets the log level of the script, similarly to syslog
+#%                                Defualt log level is INFO(6)
+#%                                See https://en.wikipedia.org/wiki/Syslog#Severity_level for more info.
+#%
+#%    -v, --verbose               Sets --log-level to Debug(7)
+#%    --version                   Displays script information
+#%
+#% <!OPTS>
+#%
+#% EXAMPLES
+#%    ${SCRIPT_NAME} <!EXAMPLE> <!DESC>
+#%    ${SCRIPT_NAME} <!EXAMPLE> <!DESC>
+#%
+#================================================================
+#% IMPLEMENTATION
+#-    version         ${SCRIPT_NAME} ${SCRIPT_VERSION}
+#-    author          ${AUTHOR_NAME}
+#-    license         GPL3
+#-    script_id       12345
+#-
+#================================================================
+#  DEBUG OPTION
+#    set -n  # Uncomment to check your syntax, without execution.
+#    set -x  # Uncomment to debug this shell script
+#
+#================================================================
+# END_OF_HEADER
+#================================================================
+#== Base variables ==#
+SCRIPT_HEADSIZE=$(head -200 ${0} | grep -n "^# END_OF_HEADER" | cut -f1 -d:)
+SCRIPT_NAME="$(basename ${0})"
+SCRIPT=$(basename ${BASH_SOURCE[0]})
+SCRIPT_VERSION="0.0.1"
+AUTHOR_NAME="$(whoami)"
+
+#SET DEFAULT OPTIONS
+OPT_VERBOSE=false
+OPT_LOGLEVEL=6
+OPT_MODE=0
+
+#Set fonts for Help.
+NORM=`tput sgr0`
+BOLD=`tput bold`
+REV=`tput smso`
+
+#== Logging ==#
+#Set loglevels
+LVL_EMERG=0
+LVL_ALERT=1
+LVL_CRIT=2
+LVL_ERR=3
+LVL_WARN=4
+LVL_NOTICE=5
+LVL_INFO=6
+LVL_DEBUG=7
+
+declare -A LOG_LEVELS
+LOG_LEVELS=([0]="emerg" [1]="alert" [2]="crit" [3]="err" [4]="warning" [5]="notice" [6]="info" [7]="debug")
+function log () {
+  local LEVEL=${1}
+  shift
+  if [ ${OPT_LOGLEVEL} -ge ${LEVEL} ]; then
+      echo "[${LOG_LEVELS[$LEVEL]}]" "$@"
+  fi
+}
+#logging aliases
+error(){ log ${LVL_ERR} ${1} }
+warn(){  log ${LVL_WARN} ${1} }
+info(){  log ${LVL_INFO} ${1} }
+debug(){ log ${LVL_DEBUG} ${1} }
+
+
+function replace_bash_variables () {
+    output=''
+    while IFS='' read -r line ; do
+        local sed_args=()
+        local varname
+        while read varname ; do
+            sed_args+=(-e "s/\${$varname}/${!varname}/g")
+        done < <(echo "$line" | grep -o '\${[a-zA-Z_][a-zA-Z_]*}' | grep -o '[a-zA-Z_][a-zA-Z_]*' | sort -u)
+        if [[ "${#sed_args[@]}" = 0 ]] ; then
+            output+="$line"
+        else
+            output+="$( printf "$line" | sed "${sed_args[@]}")"
+        fi
+    done
+    echo "$output"
+}
+
+#== usage functions ==#
+usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" | replace_bash_variables ; }
+usagefull() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#[%+-]" | sed -e "s/^#[%+-]//g" | replace_bash_variables ; }
+scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-//g" | replace_bash_variables ; }
+version(){ echo "${SCRIPT_NAME} ${SCRIPT_VERSION}"; echo; }
+
+#== control functions ==#
+die() { printf "$*: " >&2; usage;echo; echo "Run '${SCRIPT_NAME} -h' to display full help text"; exit 1 }
+
+#== Script features==#
+# Not every script requires these features, but they are useful if needed
+
+InteractiveMode=
+DefaultSubCommand=
+handleSubcommands(){ # delete me if script doesn't need sub commands
+    local subcommand="$1";
+    shift
+    export WORKINGDIR=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
+
+    debug "wd: $WORKINGDIR"
+    debug "subcmd: $subcommand"
+
+    if [ ! $subcommand ]; then
+        subcommand="$DefaultSubcommand"
+    fi
+
+    if [ ! -e "$WORKINGDIR/${SCRIPT_NAME}-$subcommand" ]; then
+        die "$subcommand is not a valid ${SCRIPT_NAME} subcommand."; exit 1
+    fi
+
+    source "$WORKINGDIR/${SCRIPT_NAME}-$subcommand"
+
+    if [ ! "$(type cmd_$subcommand)" 1> /dev/null ]; then
+        die "subcommand '$subcommand' has no entry point"; exit 1
+    fi
+
+    cmd_$subcommand "$@"
+}
+
+#== Main loop of the program ==#
+main(){
+
+    #if [ "$#" -lt 1 ]; then # uncomment this if block if subcommands are desired otherwise delete
+    #    handleSubcommands ""; exit 0; # add default subcommand if needed
+    #fi
+    while getopts :hvgi-: opt "$@"; do
+        case "${opt}" in
+            h )
+                usagefull; exit 0;;
+            i )
+                OPT_MODE=1;;
+            v )
+                OPT_VERBOSE=true;;
+            - ) LONG_OPTARG="${OPTARG#*=}"
+                case "${OPTARG}" in
+                    version ) version; exit 0;;
+                    verbose ) OPT_VERBOSE=true;;
+                    log-level* ) OPT_LOGLEVEL=${LONG_OPTARG};;
+                    version* | verbose* )
+                        die "Option '--$OPTARG' doesn't allow an argument" ;;
+                esac;;
+            \? ) die "Unknown Option '-$OPTARG'" ;;
+            * ) die "Unknown Option '-$OPTARG'" ;;
+            #* ) # Uncomment this block if subcommands are required otherwise delete
+            #    log $LVL_DEBUG "should handle subcommands"
+            #    DefaultSubcommand=
+            #    handleSubcommands
+            #    exit 0
+            #    break;;
+        esac
+    done
+    shift "$((OPTIND-1))"
+
+    # set verbosity once (set logging level)
+    if [ "$OPT_VERBOSE" = "true" -a "${OPT_LOGLEVEL}" -le "${LVL_INFO}" ]; then
+        OPT_LOGLEVEL=$LVL_DEBUG
+    fi
+
+    InteractiveMode=${OPT_MODE}
+
+    # anything left in $@ should be subcommands
+    # handleSubcommands "$@" # Uncomment if you want to use subcommands
+
+
+    #== Script Specific Logic ==#
+
+
+    #== End Script Specific Logic ==#
+    exit 0
+}
+
+main "$@"
