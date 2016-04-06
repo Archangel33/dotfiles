@@ -200,6 +200,19 @@ setup_bash(){
     fi
 }
 
+add_to_path(){
+	if [[ -e "$1" ]]; then
+		if [[ ":$PATH:" == *":$1:"* ]]; then
+			msg "$1 already exists on PATH"
+		else
+			msg "Adding $1 to PATH"
+			PATH="$PATH:$1"
+			ret="$?"
+			status_msg msg "Adding $1 to end of PATH"
+		fi
+	fi
+}
+
 ################################ MAIN(){{{1
 variable_set "$HOME"
 program_must_exist "git"
@@ -225,6 +238,7 @@ create_symlinks "$DOTFILES" \
 
 # Any application specific setup {{{2
 # setup_Shell {{{3
+add_to_path     ~/.bin
 setup_bash      "$BASHRC_path"
 
 # Vundle {{{3
