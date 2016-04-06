@@ -111,16 +111,16 @@ unixpath() {
 
 [ -z "$DOTFILES_name" ]     && DOTFILES_name="dotfiles"
 [ -z "$DOTFILES_path" ]     && DOTFILES_path="$HOME/dotfiles"                                # dotfiles directory
-[ -z "$DOTFILES_backup" ]   && DOTFILES_backup="$HOME/.dotfiles_old/$(timestamp)"              # old dotfiles backup directory
-[ -z "$DOTFILES_URI" ]      && DOTFILES_URI='https://github.com/Archangel33/dotfiles.git'   # repo URI of
-[ -z "$DOTFILES_branch" ]   && DOTFILES_branch='master'                                        # branch to pull your dotfiles from
-DOTFILES="vimrc gitconfig gitignore vim bash bashrc"                                                        # list of files/folders to symlink in homedir
+[ -z "$DOTFILES_backup" ]   && DOTFILES_backup="$HOME/.dotfiles_old/$(timestamp)"            # old dotfiles backup directory
+[ -z "$DOTFILES_URI" ]      && DOTFILES_URI='https://github.com/Archangel33/dotfiles.git'    # repo URI of
+[ -z "$DOTFILES_branch" ]   && DOTFILES_branch='master'                                      # branch to pull your dotfiles from
+DOTFILES="vimrc gitconfig gitignore vim bash bashrc bin"                                     # list of files/folders to symlink in homedir
 
-[ -z "$VUNDLE_name" ]   && VUNDLE_name="vundle"                                            # name of vundle
-[ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/vundle"                          # Path to bundles dir for Vundle
-[ -z "$VUNDLE_URI" ]    && VUNDLE_URI="https://github.com/gmarik/vundle.git"              # URI for Vundle plugin for vim
+[ -z "$VUNDLE_name" ]   && VUNDLE_name="vundle"                                              # name of vundle
+[ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/Vundle.vim"                            # Path to bundles dir for Vundle
+[ -z "$VUNDLE_URI" ]    && VUNDLE_URI="https://github.com/gmarik/vundle.git"                 # URI for Vundle plugin for vim
 [ -z "$VUNDLE_branch" ] && VUNDLE_branch="master"                                            # branch from pull vundle frome
-[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="vim/rc/bundles.vim"
+[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="$HOME/.vim/rc/vimrc.bundles"
 
 [ -z "$BASHRC_path" ]   && BASHRC_path="$HOME/.bashrc"
 
