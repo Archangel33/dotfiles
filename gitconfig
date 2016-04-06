@@ -5,6 +5,7 @@
 	editor = vim
 	excludefile = C:/Users/B88MJR/.gitignore
 	excludesfile = C:/Users/B88MJR/.gitignore
+    autocrlf = false
 [push]
 	default = simple
 [filter "lfs"]
