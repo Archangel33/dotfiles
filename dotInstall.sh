@@ -138,6 +138,7 @@ do_backup() {
         fi
     done
 	status_msg msg "Backing up Current dotfiles"
+	ret=0
     return $ret
 }
 
@@ -176,18 +177,13 @@ sync_repo() {
 }
 
 setup_vundle() {
-    local system_shell="$SHELL"
-    export SHELL='/bin/sh'
-
-    vim \
-        -u "$1/$2" \
-        "+set nomore" \
-        "+VundleInstall!" \
-        "+VundleClean" \
-        "+qall"
     msg "Updating Vim plugins using Vundle"
+    #local system_shell="$SHELL"
+    #export SHELL='/bin/sh'
 
-    export SHELL="$system_shell"
+    vim --noplugins +set nomore +VundleInstall! +VundleClean +qall
+	ret="$?"
+    #export SHELL="$system_shell"
 
     status_msg out "updating/installing plugins using Vundle"
 }
@@ -247,6 +243,5 @@ sync_repo       "$VUNDLE_path" \
                 "$VUNDLE_branch" \
                 "$VUNDLE_name"
 
-setup_vundle    "$DOTFILES_path" \
-                "$VUNDLE_default_bundle_path"
+setup_vundle	"$VUNDLE_default_bundle_path"
 
