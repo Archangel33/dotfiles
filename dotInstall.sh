@@ -130,16 +130,14 @@ do_backup() {
     vrb $1
     for file in $1; do
         if [[ -e ~/.$file ]]; then
-            [[ ! -L ~/.$file ]] && mv -v ~/.$file $2
+            mv ~/.$file $2
             ret="$?"
-            status_msg vrb "Moving ~/.$file to $2"
+            status_msg vrb "Moving ~/.$file -> $2"
         else
             err "$file does not exist"
         fi
     done
-    if [[ ! $ret = "0" ]]; then
-        err "Backup"
-    fi
+	status_msg msg "Backing up Current dotfiles"
     return $ret
 }
 
@@ -147,11 +145,14 @@ create_symlinks(){
     msg "Creating Symlinks"
     for file in $1; do
         action="~/.$file to $2/$file"
-        vrb "Symlinking: ln $2/$file $(echo ~/.$file)"
+        dbg "Symlinking: ln $2/$file $(echo ~/.$file)"
         lnif $2/$file ~/.$file
         ret="$?"
         status_msg vrb "linking $action"
     done
+	ret=0
+	status_msg msg "Creating Symlinks"
+	return $ret
 }
 
 sync_repo() {
@@ -160,7 +161,7 @@ sync_repo() {
     local repo_branch="$3"
     local repo_name="$4"
 
-    msg "Trying to update $repo_name"
+    msg "Updating $repo_name"
 
     if [ ! -e "$repo_path" ]; then
         mkdir -p "$repo_path"
@@ -175,7 +176,6 @@ sync_repo() {
 }
 
 setup_vundle() {
-    msg "Attempting to update Vim plugins using Vundle"
     local system_shell="$SHELL"
     export SHELL='/bin/sh'
 
@@ -185,6 +185,7 @@ setup_vundle() {
         "+VundleInstall!" \
         "+VundleClean" \
         "+qall"
+    msg "Updating Vim plugins using Vundle"
 
     export SHELL="$system_shell"
 
@@ -195,6 +196,7 @@ setup_bash(){
     if [[ -e $1 ]]; then
     	msg "Sourcing $1"
     	source $1
+		status_msg msg "Sourcing $1"
     fi
 }
 
