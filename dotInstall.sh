@@ -22,7 +22,7 @@ MCROSS="✘"
 
 timestamp(){ date +"%Y%m%d.%H%M%S"; }
 out() { printf "$(timestamp): $*\n"; }
-err() { out "$CRED[$MCROSS]$CNORM$*" 1>&2; }
+err() { out "$*" 1>&2; }
 vrb() { [ ! "$VERBOSE" ] || out "$@"; }
 dbg() { [ ! "$DEBUG" ] || err "$@"; }
 die() { err "EXIT: $1" && [ "$2" ] && [ "$2" -ge 0 ] && exit "$2" || exit 1; }
@@ -67,20 +67,22 @@ lnif() {
     if [ -e "$target" ]; then
         if windows; then
             # tell windows to make a dir/file sym link
-	    target=$(winpath "$target")
-	    link=$(winpath "$link")
-	    echo "target: ${target}"
-	    echo "link: ${link}"
+			target=$(winpath "$target")
+			link=$(winpath "$link")
+			dbg "target: ${target}"
+			dbg "link: ${link}"
             if [[ -d "$target" ]]; then # dir
                 cmd <<< "mklink /D \"${link}\" \"${target}\"" > /dev/null
             else # file
                 cmd <<< "mklink \"${link}\" \"${target}\"" > /dev/null
             fi
+			
         else
             ln -sfn "$target" "$link"
         fi
     fi
     ret="$?"
+	status_msg vrb "Linking ${link//\\/\\\\} -> ${target//\\/\\\\}"
 }
 dir_must_exist() {
     if [ ! -d $1 ]; then
@@ -109,16 +111,16 @@ unixpath() {
 
 [ -z "$DOTFILES_name" ]     && DOTFILES_name="dotfiles"
 [ -z "$DOTFILES_path" ]     && DOTFILES_path="$HOME/dotfiles"                                # dotfiles directory
-[ -z "$DOTFILES_backup" ]   && DOTFILES_backup="$HOME/.dotfiles_old/$(timestamp)"              # old dotfiles backup directory
-[ -z "$DOTFILES_URI" ]      && DOTFILES_URI='https://github.com/Archangel33/dotfiles.git'   # repo URI of
-[ -z "$DOTFILES_branch" ]   && DOTFILES_branch='master'                                        # branch to pull your dotfiles from
-DOTFILES="vimrc gitconfig gitignore vim bash bashrc"                                                        # list of files/folders to symlink in homedir
+[ -z "$DOTFILES_backup" ]   && DOTFILES_backup="$HOME/.dotfiles_old/$(timestamp)"            # old dotfiles backup directory
+[ -z "$DOTFILES_URI" ]      && DOTFILES_URI='https://github.com/Archangel33/dotfiles.git'    # repo URI of
+[ -z "$DOTFILES_branch" ]   && DOTFILES_branch='master'                                      # branch to pull your dotfiles from
+DOTFILES="vimrc gitconfig gitignore vim bash bashrc bin"                                     # list of files/folders to symlink in homedir
 
-[ -z "$VUNDLE_name" ]   && VUNDLE_name="vundle"                                            # name of vundle
-[ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/vundle"                          # Path to bundles dir for Vundle
-[ -z "$VUNDLE_URI" ]    && VUNDLE_URI="https://github.com/gmarik/vundle.git"              # URI for Vundle plugin for vim
+[ -z "$VUNDLE_name" ]   && VUNDLE_name="vundle"                                              # name of vundle
+[ -z "$VUNDLE_path" ]   && VUNDLE_path="$HOME/.vim/bundle/Vundle.vim"                            # Path to bundles dir for Vundle
+[ -z "$VUNDLE_URI" ]    && VUNDLE_URI="https://github.com/gmarik/vundle.git"                 # URI for Vundle plugin for vim
 [ -z "$VUNDLE_branch" ] && VUNDLE_branch="master"                                            # branch from pull vundle frome
-[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="vim/rc/bundles.vim"
+[ -z "$VUNDLE_default_bundle_path" ] && VUNDLE_default_bundle_path="$HOME/.vim/rc/vimrc.bundles"
 
 [ -z "$BASHRC_path" ]   && BASHRC_path="$HOME/.bashrc"
 
@@ -128,16 +130,15 @@ do_backup() {
     vrb $1
     for file in $1; do
         if [[ -e ~/.$file ]]; then
-            [[ ! -L ~/.$file ]] && mv -v ~/.$file $2
+            mv ~/.$file $2
             ret="$?"
-            status_msg vrb "Moving ~/.$file to $2"
+            status_msg vrb "Moving ~/.$file -> $2"
         else
             err "$file does not exist"
         fi
     done
-    if [[ ! $ret = "0" ]]; then
-        err "Backup"
-    fi
+	status_msg msg "Backing up Current dotfiles"
+	ret=0
     return $ret
 }
 
@@ -152,11 +153,14 @@ create_symlinks(){
     msg "Creating Symlinks"
     for file in symlinksToBe; do
         action="~/.$file to $2/$file"
-        vrb "Symlinking: ln $2/$file $(echo ~/.$file)"
+        dbg "Symlinking: ln $2/$file $(echo ~/.$file)"
         lnif $2/$file ~/.$file
         ret="$?"
         status_msg vrb "linking $action"
     done
+	ret=0
+	status_msg msg "Creating Symlinks"
+	return $ret
 }
 
 sync_repo() {
@@ -165,7 +169,7 @@ sync_repo() {
     local repo_branch="$3"
     local repo_name="$4"
 
-    msg "Trying to update $repo_name"
+    msg "Updating $repo_name"
 
     if [ ! -e "$repo_path" ]; then
         mkdir -p "$repo_path"
@@ -180,18 +184,13 @@ sync_repo() {
 }
 
 setup_vundle() {
-    msg "Attempting to update Vim plugins using Vundle"
-    local system_shell="$SHELL"
-    export SHELL='/bin/sh'
+    msg "Updating Vim plugins using Vundle"
+    #local system_shell="$SHELL"
+    #export SHELL='/bin/sh'
 
-    vim \
-        -u "$1/$2" \
-        "+set nomore" \
-        "+VundleInstall!" \
-        "+VundleClean" \
-        "+qall"
-
-    export SHELL="$system_shell"
+    vim --noplugins +set nomore +VundleInstall! +VundleClean +qall
+	ret="$?"
+    #export SHELL="$system_shell"
 
     status_msg out "updating/installing plugins using Vundle"
 }
@@ -200,7 +199,21 @@ setup_bash(){
     if [[ -e $1 ]]; then
     	msg "Sourcing $1"
     	source $1
+		status_msg msg "Sourcing $1"
     fi
+}
+
+add_to_path(){
+	if [[ -e "$1" ]]; then
+		if [[ ":$PATH:" == *":$1:"* ]]; then
+			msg "$1 already exists on PATH"
+		else
+			msg "Adding $1 to PATH"
+			PATH="$PATH:$1"
+			ret="$?"
+			status_msg msg "Adding $1 to end of PATH"
+		fi
+	fi
 }
 
 ################################ MAIN(){{{1
@@ -228,6 +241,7 @@ create_symlinks "$DOTFILES" \
 
 # Any application specific setup {{{2
 # setup_Shell {{{3
+add_to_path     ~/.bin
 setup_bash      "$BASHRC_path"
 
 # Vundle {{{3
@@ -236,6 +250,5 @@ sync_repo       "$VUNDLE_path" \
                 "$VUNDLE_branch" \
                 "$VUNDLE_name"
 
-setup_vundle    "$DOTFILES_path" \
-                "$VUNDLE_default_bundle_path"
+setup_vundle	"$VUNDLE_default_bundle_path"
 
