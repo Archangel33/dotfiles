@@ -67,20 +67,22 @@ lnif() {
     if [ -e "$target" ]; then
         if windows; then
             # tell windows to make a dir/file sym link
-	    target=$(winpath "$target")
-	    link=$(winpath "$link")
-	    echo "target: ${target}"
-	    echo "link: ${link}"
+			target=$(winpath "$target")
+			link=$(winpath "$link")
+			dbg "target: ${target}"
+			dbg "link: ${link}"
             if [[ -d "$target" ]]; then # dir
                 cmd <<< "mklink /D \"${link}\" \"${target}\"" > /dev/null
             else # file
                 cmd <<< "mklink \"${link}\" \"${target}\"" > /dev/null
             fi
+			
         else
             ln -sfn "$target" "$link"
         fi
     fi
     ret="$?"
+	status_msg vrb "Linking ${link//\\/\\\\} -> ${target//\\/\\\\}"
 }
 dir_must_exist() {
     if [ ! -d $1 ]; then
