@@ -22,7 +22,7 @@ MCROSS="✘"
 
 timestamp(){ date +"%Y%m%d.%H%M%S"; }
 out() { printf "$(timestamp): $*\n"; }
-err() { out "$CRED[$MCROSS]$CNORM$*" 1>&2; }
+err() { out "$*" 1>&2; }
 vrb() { [ ! "$VERBOSE" ] || out "$@"; }
 dbg() { [ ! "$DEBUG" ] || err "$@"; }
 die() { err "EXIT: $1" && [ "$2" ] && [ "$2" -ge 0 ] && exit "$2" || exit 1; }
