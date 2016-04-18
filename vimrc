@@ -762,6 +762,22 @@ if isdirectory(expand("~/.vim/bundle/vim-airline/"))
 endif
 " }}}
 
+" VimWiki {{{
+if isdirectory(expand("~/.vim/bundle/vimwiki/"))
+    let wiki_origin = {}
+    let wiki_origin.path = '~/.vim/vimwikis/origin/'
+    let wiki_origin.maxhi = 0 " hilight broken wiki links
+    let wiki_origin.auto_export= 0 " auto export wiki file to html
+    let wiki_origin.diary_index = 'daily'
+    let wiki_origin.auto_toc = 1
+    let wiki_origin.auto_tags = 0
+    let wiki_origin.syntax = 'default' " set wiki file syntax to default or markdown
+    let wiki_origin.custom_wiki2html = '' " wiki2html converter if syntax is not default
+    let wiki_origin.index = 'index'
+    let wiki_origin.diary_header = 'Daily'
+    let wiki_origin.ext = '.wiki'
+    let wiki_origin.diary_rel = 'daily/'
+    let g:vimwiki_list = [wiki_origin]
 endif
 " }}}
 
