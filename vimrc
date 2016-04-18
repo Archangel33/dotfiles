@@ -751,9 +751,16 @@ let g:wildfire_objects = {
 " Default in terminal vim is 'dark'
 if isdirectory(expand("~/.vim/bundle/vim-airline/"))
     let g:airline_theme = 'solarized'
-    let g:airline_powerline_fonts = 1
+    let g:airline_powerline_fonts = 0
     let g:airline_inactive_collapse = 1
     let g:airline#extensions#tabline#enabled = 1
+    " unicode symbols
+    let g:airline_left_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_symbols_linenr = 'ln#' " U+2116
+    let g:airline_symbols_branch = '⎇' " U+2325 or U+2387
+endif
+" }}}
 
 endif
 " }}}
