@@ -309,7 +309,7 @@ if (exists('+colorcolumn'))
     hi ColorColumn ctermbg=0
 endif
 
-hi clear SignColumn      " SignColumn should match background
+"hi clear SignColumn      " SignColumn should match background
 "hi GitGutterAdd
 "hi GitGutterChange
 "hi GitGutterDelete
@@ -403,11 +403,6 @@ vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
 vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
 vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
 
-" The following two lines conflict with moving to top and
-" bottom of the screen
-noremap <S-H> gT
-noremap <S-L> gt
-
 " Stupid shift key fixes
 if has("user_commands")
     command! -bang -nargs=* -complete=file E e<bang> <args>
@@ -483,6 +478,10 @@ nnoremap <silent> <leader>q gwip
 nnoremap <leader>o o<ESC>
 nnoremap <leader>O O<ESC>
 
+" Remap for esc
+inoremap <S-CR> <ESC>
+vnoremap v <ESC>
+
 " For local replace
 nnoremap gr gd[{V%::s/<C-R>///gc<left><left><left>
 
@@ -496,6 +495,10 @@ noremap <leader>h <C-w>h
 noremap <leader>j <C-w>j
 noremap <leader>k <C-w>k
 noremap <leader>l <C-w>l
+
+" git merge conflict
+noremap [C [x
+noremap ]C ]x
 
 " }}}
 
