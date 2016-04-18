@@ -83,6 +83,7 @@ let g:bundle_groups=[
 " General {
 if count(g:bundle_groups, 'general')
     Bundle 'vimwiki/vimwiki'
+    Bundle 'itchyny/calendar.vim'
     Bundle 'LargeFile'
     Bundle 'LogViewer'
     Bundle 'scrooloose/nerdtree'

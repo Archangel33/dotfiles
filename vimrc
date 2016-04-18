@@ -779,6 +779,12 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
     let wiki_origin.diary_rel = 'daily/'
     let g:vimwiki_list = [wiki_origin]
 endif
+" }}} VimWiki
+
+" Calendar.vim {{{
+if isdirectory(expand("~/.vim/bundle/calendar.vim/"))
+    let g:calendar_first_day="sunday"
+endif
 " }}}
 
 " }}} Plugins
