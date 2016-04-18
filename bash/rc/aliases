@@ -26,7 +26,7 @@ mkcd () {
     mkdir -p -- "$1" &&
         cd -P -- "$1"
 }
-
+alias mkcd="mkcd"
 
 # Wrapper function for Maven's mvn command.
 mvn-color()
@@ -47,3 +47,7 @@ mvn-color()
 
 # Override the mvn command with the colorized one.
 alias mvnc="mvn-color"
+
+alias vimwiki="vim +VimwikiIndex"
+alias note="vim +Note"
+alias notes="vim +Notes"
