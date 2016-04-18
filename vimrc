@@ -928,6 +928,13 @@ command! StripTrailingWhitespace call StripTrailingWhitespace()
 
 " }}}
 
+" scrub filenames {{{
+augroup vimrc-scrub
+    au!
+    au BufWritePre *.wiki call substitute(bufname("%"), " ", "_", "")
+augroup END
+" }}}
+
 " MkDir & Confirm {{{
 " define function to confirm creating a directory if it doesn't exist
 function! MkDirAndConfirm(path, dir)
