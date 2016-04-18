@@ -558,6 +558,7 @@ set completeopt=menu,preview,longest
 
 " Ctags {{{
 set tags+=./tags;/,~/.vimtags,.vim/rc/tags
+let g:easytags_cmd = '~/bin/ctags58/ctags'
 
 " Make tags placed in .git/tags file available in all levels of a repository
 let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
