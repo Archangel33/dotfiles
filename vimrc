@@ -813,6 +813,10 @@ endif
 
 " Functions {{{
 
+" Note Taking {{{
+command! Note execute "normal \<Plug>VimwikiMakeDiaryNote"
+command! Notes execute "normal \<Plug>VimwikiDiaryIndex" | execute "normal \<Plug>VimwikiDiaryGenerateLinks"
+" }}}
 " Initialize directories {{{
 function! InitializeDirectories()
     let parent = $HOME
