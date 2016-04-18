@@ -817,6 +817,46 @@ endif
 command! Note execute "normal \<Plug>VimwikiMakeDiaryNote"
 command! Notes execute "normal \<Plug>VimwikiDiaryIndex" | execute "normal \<Plug>VimwikiDiaryGenerateLinks"
 " }}}
+
+" git working directory checks {{{
+
+" --is-inside-git-dir {{{
+" When the current working directory is below the repository directory print "true", otherwise "false".
+function! IsInsideGitDir()
+    setlocal ignorecase
+    let l:IsInsideGitDir = system('git rev-parse --is-inside-git-dir')
+    if l:IsInsideGitDir =~ "^true.$"
+        return 1
+    endif
+    return 0
+endfunction
+" }}}
+
+" --is-inside-work-tree {{{
+" When the current working directory is inside the work tree of the repository print "true", otherwise "false".
+function! IsInsideWorkTree()
+    setlocal ignorecase
+    let l:IsInsideWorkTree = system('git rev-parse --is-inside-work-tree')
+    if l:IsInsideWorkTree =~ "^true.$"
+        return 1
+    endif
+    return 0
+endfunction
+" }}}
+
+" --is-bare-repository {{{
+" When the repository is bare print "true", otherwise "false".
+function! IsBareRepository()
+setlocal ignorecase
+    let l:IsInsideBareRepository = system('git rev-parse --is-bare-repository')
+    if l:IsInsideBareRepository =~ "^true.$"
+        return 1
+    endif
+    return 0
+endfunction
+" }}}
+" }}}
+
 " Initialize directories {{{
 function! InitializeDirectories()
     let parent = $HOME
