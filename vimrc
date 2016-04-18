@@ -183,7 +183,9 @@ endif
 
 " Automatically switch to the current file directory when
 " a new buffer is opened
-autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+augroup cdwd
+    autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+augroup END
 " Always switch to the current file directory
 
 "set autowrite                       " Automatically write a file when leaving a modified buffer
@@ -199,7 +201,9 @@ set iskeyword-=-                    " '-' is an end of word designator
 
 " Instead of reverting the cursor to the last position in the buffer, we
 " set it to the first line when editing a git commit message
-au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+augroup git
+    au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+augroup END
 
 " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
 " Restore cursor to file position in previous editing session
@@ -331,7 +335,8 @@ set splitbelow                  " Puts new split windows to the bottom of the cu
 "set matchpairs+=<:>             " Match, to be used with %
 set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
 "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
-
+augroup formatting
+    autocmd!
 autocmd FileType ruby let b:noStripTrailingWhitespace=1
 autocmd FileType ruby let b:noAutoStripTrailingWhitespace=1
 autocmd FileType * autocmd BufWritePre <buffer> call StripTrailingWhitespace()
@@ -346,7 +351,7 @@ autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 autocmd FileType haskell setlocal commentstring=--\ %s
 " Workaround broken colour highlighting in Haskell
 autocmd FileType haskell,rust setlocal nospell
-
+augroup END
 " }}}
 
 " Key (re)Mappings {{{
@@ -551,8 +556,10 @@ inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
 inoremap <expr> <C-d>      pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
 inoremap <expr> <C-u>      pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
 
+augroup vimrc-OmniComplete
 " Automatically open and close the popup menu / preview window
 au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
+augroup END
 set completeopt=menu,preview,longest
 " }}}
 
@@ -569,7 +576,9 @@ endif
 
 " AutoCloseTag {{{
 " Make it so AutoCloseTag works for xml and xhtml files as well
-au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
+augroup autoCloseTag
+    au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
+augroup END
 nmap <Leader>ac <Plug>ToggleAutoCloseMappings
 " }}}
 
@@ -923,6 +932,7 @@ function! StripTrailingWhitespace()
     let @/=_s
     call cursor(l, c)
 endfunction
+
 command! TrimTrailingWhitespace call StripTrailingWhitespace()
 command! StripTrailingWhitespace call StripTrailingWhitespace()
 
@@ -934,6 +944,7 @@ augroup vimrc-scrub
     au BufWritePre *.wiki call substitute(bufname("%"), " ", "_", "")
 augroup END
 " }}}
+
 
 " MkDir & Confirm {{{
 " define function to confirm creating a directory if it doesn't exist
@@ -961,7 +972,10 @@ function! MkDirAndConfirm(path, dir)
     endif
 endfunction
 " call MkDirAndConfirm on buff write
-autocmd BufWriteCmd * call MkDirAndConfirm(expand("<amatch>:p"), expand("<amatch>:p:h"))
+augroup helperfunction
+    autocmd!
+    autocmd BufWriteCmd * call MkDirAndConfirm(expand("<amatch>:p"), expand("<amatch>:p:h"))
+augroup END
 "}
 
 " Shell command {{{
@@ -1006,7 +1020,8 @@ noremap <leader>sv :source ~/.vimrc<CR>
 
 " Misc {{{
 " folding
-augroup vimrc
+augroup vimrc-folding
+    au!
     au BufReadPre * setlocal foldmethod=indent
     au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
 augroup END
