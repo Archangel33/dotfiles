@@ -15,8 +15,8 @@ MCHECK="✔"
 MCROSS="✘"
 
 ###### VARS {{{1
-[ "$VERBOSE" ] || VERBOSE=
-[ "$DEBUG" ]   || DEBUG=
+[ "$VERBOSE" ] || VERBOSE=true
+[ "$DEBUG" ]   || DEBUG=true
 
 ###### Helper Funcs {{{1
 
@@ -67,8 +67,8 @@ lnif() {
     if [ -e "$target" ]; then
         if windows; then
             # tell windows to make a dir/file sym link
-			target=$(winpath "$target")
-			link=$(winpath "$link")
+			target="$(winpath "$target")"
+			link="$(winpath "$link")"
 			dbg "target: ${target}"
 			dbg "link: ${link}"
             if [[ -d "$target" ]]; then # dir
@@ -76,7 +76,7 @@ lnif() {
             else # file
                 cmd <<< "mklink \"${link}\" \"${target}\"" > /dev/null
             fi
-			
+
         else
             ln -sfn "$target" "$link"
         fi
@@ -91,7 +91,7 @@ dir_must_exist() {
     ret="$?"
 }
 windows() {
-    [[ -n "$WINDIR" ]]
+    [[ -n "$WINDIR" && $OSTYPE != "cygwin" ]]
 }
 winpath() {
     echo "$1" \
@@ -147,11 +147,11 @@ find_symlinks(){
 }
 
 create_symlinks(){
-    debug "Aggregating Symlinks"
+    dbg "Aggregating Symlinks"
     local symlinksToBe=$1
     local dotsymlinkNodes=find_symlinks
     msg "Creating Symlinks"
-    for file in symlinksToBe; do
+    for file in $symlinksToBe; do
         action="~/.$file to $2/$file"
         dbg "Symlinking: ln $2/$file $(echo ~/.$file)"
         lnif $2/$file ~/.$file
@@ -241,7 +241,7 @@ create_symlinks "$DOTFILES" \
 
 # Any application specific setup {{{2
 # setup_Shell {{{3
-add_to_path     ~/.bin
+add_to_path     ~/bin
 setup_bash      "$BASHRC_path"
 
 # Vundle {{{3
