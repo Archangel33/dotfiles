@@ -493,9 +493,9 @@ nnoremap gr gd[{V%::s/<C-R>///gc<left><left><left>
 " For global replace
 nnoremap gR gD:%s/<C-R>///gc<left><left><left>
 
-"  -- / == to left/right through tabs
+"  -- / ++ to left/right through tabs
 noremap -- :bp<CR>
-noremap == :bn<CR>
+noremap ++ :bn<CR>
 noremap <leader>h <C-w>h
 noremap <leader>j <C-w>j
 noremap <leader>k <C-w>k
@@ -786,7 +786,16 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
     let wiki_origin.diary_header = 'Daily'
     let wiki_origin.ext = '.wiki'
     let wiki_origin.diary_rel = 'daily/'
-    let g:vimwiki_list = [wiki_origin]
+
+    let wiki_work = {}
+    let wiki_work.path = '~/.vim/vimwikis/work/'
+    let wiki_work.diary_index = 'daily'
+    let wiki_work.index = 'index'
+    let wiki_origin.diary_header = 'Daily'
+    let wiki_origin.diary_rel = 'daily/'
+
+    let g:vimwiki_list = [wiki_origin] " add all the wikis
+    let g:vimwiki_ext2syntax = {} " make sure the scope of vimwiki ft is only wiki files
 endif
 " }}} VimWiki
 
