@@ -3,4 +3,5 @@
 *.swo
 *.iml
 .idea/
-target/
+*target/
+*bower_components/
