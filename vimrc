@@ -126,6 +126,9 @@ return  (has('win32') || has('win64'))
 endfunction
 " }}}
 
+" set flag for if using vim in intellij
+command! IdeaMode let g:ideaMode=1
+
 " Basics {{{
 set nocompatible        " Must be first line
 if !WINDOWS()
@@ -151,6 +154,8 @@ endif
 let g:vimrcDir="~/.vim/rc/"
 let g:vimrcBundles="~/.vim/rc/vimrc.bundles"
 let g:vimrc="~/.vimrc"
+
+set viminfo+=n~/.vim/viminfo
 " }}}
 
 " Use bundles config {{{
@@ -264,6 +269,7 @@ endif
 
 set backspace=indent,eol,start  " Backspace for dummies
 set linespace=0                 " No extra spaces between rows
+set relativenumber              " line numbers are relative to current line
 set number                      " Line numbers on
 set showmatch                   " Show matching brackets/parenthesis
 set incsearch                   " Find as you type search
@@ -390,23 +396,27 @@ function! WrapRelativeMotion(key, ...)
     endif
 endfunction
 
-" Map g* keys in Normal, Operator-pending, and Visual+select
-noremap $ :call WrapRelativeMotion("$")<CR>
-noremap <End> :call WrapRelativeMotion("$")<CR>
-noremap 0 :call WrapRelativeMotion("0")<CR>
-noremap <Home> :call WrapRelativeMotion("0")<CR>
-noremap ^ :call WrapRelativeMotion("^")<CR>
-" Overwrite the operator pending $/<End> mappings from above
-" to force inclusive motion with :execute normal!
-onoremap $ v:call WrapRelativeMotion("$")<CR>
-onoremap <End> v:call WrapRelativeMotion("$")<CR>
-" Overwrite the Visual+select mode mappings from above
-" to ensure the correct vis_sel flag is passed to function
-vnoremap $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
-vnoremap <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
-vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
-vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
-vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
+"only set these mappings if not in intellij (this should really be a bug for
+"ideaVim)
+if !exists("g:ideaMode")
+    " Map g* keys in Normal, Operator-pending, and Visual+select
+    noremap $ :call WrapRelativeMotion("$")<CR>
+    noremap <End> :call WrapRelativeMotion("$")<CR>
+    noremap 0 :call WrapRelativeMotion("0")<CR>
+    noremap <Home> :call WrapRelativeMotion("0")<CR>
+    noremap ^ :call WrapRelativeMotion("^")<CR>
+    " Overwrite the operator pending $/<End> mappings from above
+    " to force inclusive motion with :execute normal!
+    onoremap $ v:call WrapRelativeMotion("$")<CR>
+    onoremap <End> v:call WrapRelativeMotion("$")<CR>
+    " Overwrite the Visual+select mode mappings from above
+    " to ensure the correct vis_sel flag is passed to function
+    vnoremap $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
+    vnoremap <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
+    vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
+    vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
+    vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>
+endif
 
 " Stupid shift key fixes
 if has("user_commands")
@@ -441,6 +451,46 @@ nnoremap <silent> <leader>/ :nohlsearch<CR>
 " toggle hilighting of search results
 " nmap <silent> <leader>/ :set invhlsearch<CR>
 
+" simple search selection
+vnoremap <expr> // 'y/\V'.escape(@",'\').'<CR>'
+
+" advanced search:
+" Search for selected text.
+" http://vim.wikia.com/wiki/VimTip171
+let s:save_cpo = &cpo | set cpo&vim
+if !exists('g:VeryLiteral')
+  let g:VeryLiteral = 0
+endif
+function! s:VSetSearch(cmd)
+  let old_reg = getreg('"')
+  let old_regtype = getregtype('"')
+  normal! gvy
+  if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
+    let @/ = @@
+  else
+    let pat = escape(@@, a:cmd.'\')
+    if g:VeryLiteral
+      let pat = substitute(pat, '\n', '\\n', 'g')
+    else
+      let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
+      let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
+      let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
+    endif
+    let @/ = '\V'.pat
+  endif
+  normal! gV
+  call setreg('"', old_reg, old_regtype)
+endfunction
+vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
+vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+vmap <kMultiply> *
+nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
+  \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
+if !hasmapto("<Plug>VLToggle")
+  nmap <unique> <Leader>vl <Plug>VLToggle
+endif
+let &cpo = s:save_cpo | unlet s:save_cpo
+
 " Find merge conflict markers
 noremap <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
 
@@ -452,6 +502,14 @@ cnoremap cd. lcd %:p:h
 " Visual shifting (does not exit Visual mode)
 vnoremap < <gv
 vnoremap > >gv
+
+" Move lines up and down
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
 
 " Allow using the repeat operator with a visual selection (!)
 vnoremap . :normal .<CR>
@@ -504,6 +562,11 @@ noremap <leader>l <C-w>l
 " git merge conflict
 noremap [C [x
 noremap ]C ]x
+
+" working with quotes
+:nnoremap <Leader>q" ciw""<Esc>P
+:nnoremap <Leader>q' ciw''<Esc>P
+:nnoremap <Leader>qd daW"=substitute(@@,"'\\\|\"","","g")<CR>P
 
 " }}}
 
@@ -751,7 +814,7 @@ let g:wildfire_objects = {
 " Set configuration options for the statusline plugin vim-airline.
 " Use the powerline theme and optionally enable powerline symbols.
 " To use the symbols , , , , , , and .in the statusline
-" segments add the following to your .vimrc.before.local file:
+" segments add the following to your vimrc file:
 "   let g:airline_powerline_fonts=1
 " If the previous symbols do not render for you then install a
 " powerline enabled font.
@@ -760,7 +823,7 @@ let g:wildfire_objects = {
 " Default in terminal vim is 'dark'
 if isdirectory(expand("~/.vim/bundle/vim-airline/"))
     let g:airline_theme = 'solarized'
-    let g:airline_powerline_fonts = 0
+    let g:airline_powerline_fonts = 1
     let g:airline_inactive_collapse = 1
     let g:airline#extensions#tabline#enabled = 1
     " unicode symbols
