@@ -72,6 +72,7 @@ endif
 " list only the plugin groups you will use
 let g:bundle_groups=[
             \ 'general',
+            \ 'wiki',
             \ 'writing',
             \ 'programming',
             \ 'python',
@@ -82,8 +83,6 @@ let g:bundle_groups=[
 
 " General {
 if count(g:bundle_groups, 'general')
-    Bundle 'vimwiki/vimwiki'
-    Bundle 'itchyny/calendar.vim'
     Bundle 'LargeFile'
     Bundle 'LogViewer'
     Bundle 'scrooloose/nerdtree'
@@ -119,6 +118,14 @@ if count(g:bundle_groups, 'general')
     Bundle 'kana/vim-textobj-indent'
     Bundle 'gcmt/wildfire.vim'
     Bundle 'vim-scripts/BufOnly.vim'
+endif
+" }
+" Wiki {
+if count(g:bundle_groups, 'wiki')
+    Bundle 'vimwiki/vimwiki'
+    Bundle 'itchyny/calendar.vim'
+    Bundle 'farseer90718/vim-taskwarrior'
+    Bundle 'tbabej/taskwiki'
 endif
 " }
 
