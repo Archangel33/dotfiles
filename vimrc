@@ -859,6 +859,19 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
 
     let g:vimwiki_list = [wiki_origin] " add all the wikis
     let g:vimwiki_ext2syntax = {} " make sure the scope of vimwiki ft is only wiki files
+
+    augroup vimwiki
+    au! BufRead ~/.vim/vimwikis/index.wiki !git pull
+    au! BufWritePost ~/.vim/vimwikis/* !git commit -am "VimWiki save triggered auto-commit + push.";git push
+    augroup END
+
+" Note Taking {{{
+    command! Note execute "normal \<Plug>VimwikiMakeDiaryNote"
+    command! Notes execute "normal \<Plug>VimwikiDiaryIndex" | execute "normal \<Plug>VimwikiDiaryGenerateLinks"
+" }}}
+
+
+
 endif
 " }}} VimWiki
 
@@ -893,11 +906,6 @@ endif
 " }}}
 
 " Functions {{{
-
-" Note Taking {{{
-command! Note execute "normal \<Plug>VimwikiMakeDiaryNote"
-command! Notes execute "normal \<Plug>VimwikiDiaryIndex" | execute "normal \<Plug>VimwikiDiaryGenerateLinks"
-" }}}
 
 " git working directory checks {{{
 
