@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-curl -# -o ~/.bash/.git-prompt.sh \
-    https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-source ~/.bash/.git-prompt.sh
-
+if [ "$USERDNSDOMAIN" != "JUDICIAL.LOCAL" ]; then
+    curl -k -o ~/.bash/.git-prompt.sh \
+        https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+    source ~/.bash/.git-prompt.sh
+fi
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUPSTREAM='verbose git'
 export GIT_PS1_SHOWSTASHSTATE=1
