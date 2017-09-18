@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+
+# Shortcuts
+
+alias reload="source ~/.bash_profile"
+
 # ls Command
 LS_COMMON="-hG"
 # --color : On Windows7 this produces permission errors, e.g. for Music folder:
@@ -22,11 +27,9 @@ LS_COMMON="$LS_COMMON -I Thumbs.db "
 # LS_COMMON="$LS_COMMON -I Desktop\*"
 alias ls="command ls $LS_COMMON" # Windows git bash
 
-mkcd () {
-    mkdir -p -- "$1" &&
-        cd -P -- "$1"
+mk () {
+    mkdir -p "$@" && cd -P "$@"
 }
-alias mkcd="mkcd"
 
 # Wrapper function for Maven's mvn command.
 mvn-color()
@@ -51,3 +54,10 @@ alias mvnc="mvn-color"
 alias vimwiki="vim +VimwikiIndex"
 alias note="vim +Note"
 alias notes="vim +Notes"
+alias in="task add +in"
+
+#list declared aliases, functions, paths
+
+alias aliases="alias | sed 's/=.*//'"
+alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
+alias paths='echo -e ${PATH//:/\\n}'
