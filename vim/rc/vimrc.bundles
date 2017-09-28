@@ -98,7 +98,7 @@ if count(g:bundle_groups, 'general')
     Bundle 'terryma/vim-multiple-cursors'
     Bundle 'vim-scripts/sessionman.vim'
     Bundle 'vim-scripts/showmarks.vim'
-    Bundle 'matchit.zip'
+    Bundle 'geoffharcourt/vim-matchit'
     Bundle 'docker/docker' , {'rtp':'/contrib/syntax/vim/'}
     Bundle 'vim-airline/vim-airline'
     Bundle 'vim-airline/vim-airline-themes'

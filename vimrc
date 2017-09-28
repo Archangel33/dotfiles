@@ -850,19 +850,19 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
     let wiki_origin.ext = '.wiki'
     let wiki_origin.diary_rel = 'daily/'
 
-    let wiki_work = {}
-    let wiki_work.path = '~/.vim/vimwikis/work/'
-    let wiki_work.diary_index = 'daily'
-    let wiki_work.index = 'index'
-    let wiki_origin.diary_header = 'Daily'
-    let wiki_origin.diary_rel = 'daily/'
+    let wiki_judicial = {}
+    let wiki_judicial.path = '~/.vim/vimwikis/judicial/'
+    let wiki_judicial.diary_index = 'judicial_daily'
+    let wiki_judicial.index = 'index'
+    let wiki_judicial.diary_header = 'Daily'
+    let wiki_judicial.diary_rel = 'daily/'
 
-    let g:vimwiki_list = [wiki_origin] " add all the wikis
+    let g:vimwiki_list = [wiki_origin, wiki_judicial] " add all the wikis
     let g:vimwiki_ext2syntax = {} " make sure the scope of vimwiki ft is only wiki files
 
     augroup vimwiki
     au! BufRead ~/.vim/vimwikis/index.wiki !git pull
-    au! BufWritePost ~/.vim/vimwikis/* !git commit -am "VimWiki save triggered auto-commit + push.";git push
+    au! BufWritePost ~/.vim/vimwikis/* !git commit -am "VimWiki autosave";git push
     augroup END
 
 " Note Taking {{{
