@@ -106,7 +106,7 @@ setproxy() {
     export http_proxy=http://$proxyserver:$proxyport
     export https_proxy=http://$proxyserver:$proxyport
     export ftp_proxy=http://$proxyserver:$proxyport
-    echo -e .\Set the Proxy environment variables for the current session. Log out to reset to reset them to null again..
+    echo -e .\Set the Proxy environment variables for the current session. Log out to reset them to null again..
 }
 
 export EDITOR=vim
