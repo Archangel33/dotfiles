@@ -13,6 +13,30 @@ confirm () {
     esac
 }
 
+# Read secret string
+read_secret()
+{
+    # Disable echo.
+    stty -echo
+
+    # Set up trap to ensure echo is enabled before exiting if the script
+    # is terminated while echo is disabled.
+    trap 'stty echo' EXIT
+
+    # Read secret.
+    read "$@"
+
+    # Enable echo.
+    stty echo
+    trap - EXIT
+
+    # Print a newline because the newline entered by the user after
+    # entering the passcode is not echoed. This ensures that the
+    # next line of output begins at a new line.
+    echo
+
+}
+
 notify (){
     notify_usage() { echo "notify [[-S SuccessStr] [-F FailString] [-A ActionStr]] Action" 1>&2; exit; }
 
@@ -55,10 +79,10 @@ function whichTerm(){
 ansi-test()
       {
       for a in 0 1 4 5 7; do
-              echo "a=$a " 
+              echo "a=$a "
               for (( f=0; f<=9; f++ )) ; do
                       for (( b=0; b<=9; b++ )) ; do
-                              #echo -ne "f=$f b=$b" 
+                              #echo -ne "f=$f b=$b"
                               echo -ne "\\033[${a};3${f};4${b}m"
                               echo -ne "\\\\\\\\033[${a};3${f};4${b}m"
                               echo -ne "\\033[0m "
@@ -69,3 +93,20 @@ ansi-test()
       done
       echo
       }
+
+setproxy() {
+    echo -n "Proxy-Server:"
+    read -e proxyserver
+    echo -n "Proxy-Port:"
+    read -e proxyport
+    echo -n "Proxy username:"
+    read -e proxyusername
+    printf "Password: "
+    read_secret proxypassword
+    export http_proxy=http://$proxyserver:$proxyport
+    export https_proxy=http://$proxyserver:$proxyport
+    export ftp_proxy=http://$proxyserver:$proxyport
+    echo -e .\Set the Proxy environment variables for the current session. Log out to reset to reset them to null again..
+}
+
+export EDITOR=vim

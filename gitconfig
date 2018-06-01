@@ -16,4 +16,3 @@
     unstage = reset HEAD --
     stage = add --
 [http]
-	proxy = http://b88mjr:4ppSecurity@10.0.255.30:9090

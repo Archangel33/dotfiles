@@ -503,6 +503,12 @@ cnoremap cd. lcd %:p:h
 vnoremap < <gv
 vnoremap > >gv
 
+" shift tab
+" for normal mode
+nnoremap <S-Tab> <<
+" for insert mode
+inoremap <S-Tab> <C-d>
+
 " Move lines up and down
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
@@ -852,10 +858,16 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
 
     let wiki_judicial = {}
     let wiki_judicial.path = '~/.vim/vimwikis/judicial/'
-    let wiki_judicial.diary_index = 'judicial_daily'
+    let wiki_judicial.diary_index = 'daily'
     let wiki_judicial.index = 'index'
     let wiki_judicial.diary_header = 'Daily'
     let wiki_judicial.diary_rel = 'daily/'
+    let wiki_judicial.ext = '.md'
+    let wiki_judicial.syntax = "markdown"
+    let wiki_judicial.custom_wiki2html = ''
+    let wiki_judicial.auto_toc = 1
+    let wiki_judicial.auto_tags = 0
+
 
     let g:vimwiki_list = [wiki_origin, wiki_judicial] " add all the wikis
     let g:vimwiki_ext2syntax = {} " make sure the scope of vimwiki ft is only wiki files
