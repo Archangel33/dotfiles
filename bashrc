@@ -24,3 +24,7 @@ fi
 [ -e "$PROMPTRC" ]      && source "$PROMPTRC"
 [ -e "$ALIASES" ]       && source "$ALIASES"
 #}}}
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/b88mjr/.sdkman"
+[[ -s "/home/b88mjr/.sdkman/bin/sdkman-init.sh" ]] && source "/home/b88mjr/.sdkman/bin/sdkman-init.sh"

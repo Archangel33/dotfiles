@@ -6,7 +6,7 @@
 alias reload="source ~/.bash_profile"
 
 # ls Command
-LS_COMMON="-hG"
+LS_COMMON="-hGp"
 # --color : On Windows7 this produces permission errors, e.g. for Music folder:
 LS_COMMON="$LS_COMMON --color=auto "
 LS_COMMON="$LS_COMMON -I NTUSER.DAT\* -I ntuser.dat\* "

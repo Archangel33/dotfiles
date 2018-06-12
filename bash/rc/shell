@@ -101,12 +101,21 @@ setproxy() {
     read -e proxyport
     echo -n "Proxy username:"
     read -e proxyusername
-    printf "Password: "
-    read_secret proxypassword
-    export http_proxy=http://$proxyserver:$proxyport
-    export https_proxy=http://$proxyserver:$proxyport
-    export ftp_proxy=http://$proxyserver:$proxyport
-    echo -e .\Set the Proxy environment variables for the current session. Log out to reset them to null again..
+    if [ -z "$proxyusername" ]
+    then
+        proxy=http://$proxyserver:$proxyport/
+    else
+        printf "Password: "
+        read_secret proxypassword
+        proxy=http://$proxyusername:$proxypassword@$proxyserver:$proxyport/
+    fi
+    export http_proxy=$proxy
+    export https_proxy=$proxy
+    export ftp_proxy=$proxy
+    echo -e Set the Proxy environment variables for the current session. Logout to reset them to null again..
 }
 
 export EDITOR=vim
+export JAVA_HOME=/usr/lib/jvm/default-java
+export PATH=$PATH:$JAVA_HOME/bin
+
