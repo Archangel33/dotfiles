@@ -122,7 +122,6 @@ NORMAL 00;38;5;244                      # global default
 RESET 0                                 # reset to "normal" color
 FILE 00                                 # normal file
 DIR 00;38;5;33                          # directory
-OTHER_WRITABLE 34;40                    # 777 directory
 LINK 00;38;5;37                         # symbolic link
 MULTIHARDLINK 00                        # regular file with more than one link
 ORPHAN 48;5;254;38;5;160                # symlink to nonexistent file, or non-stat'able file
@@ -137,7 +136,7 @@ SETUID 48;5;160;38;5;230                # file that is setuid (u+s)
 SETGID 48;5;136;38;5;230                # file that is setgid (g+s)
 CAPABILITY 30;41                        # file with capability
 STICKY_OTHER_WRITABLE 48;5;64;38;5;230  # dir that is sticky and other-writable (+t,o+w)
-OTHER_WRITABLE 48;5;235;38;5;33         # dir that is other-writable (o+w) and not sticky
+OTHER_WRITABLE 48;5;236;38;5;33         # dir that is other-writable (o+w) and not sticky
 STICKY 48;5;33;38;5;230                 # dir with the sticky bit set (+t) and not other-writable
 
 # This is for files with execute permission:
