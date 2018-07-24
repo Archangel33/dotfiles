@@ -103,11 +103,11 @@ setproxy() {
     read -e proxyusername
     if [ -z "$proxyusername" ]
     then
-        proxy=http://$proxyserver:$proxyport/
+        proxy=https://$proxyserver:$proxyport/
     else
         printf "Password: "
         read_secret proxypassword
-        proxy=http://$proxyusername:$proxypassword@$proxyserver:$proxyport/
+        proxy=https://$proxyusername:$proxypassword@$proxyserver:$proxyport/
     fi
     export http_proxy=$proxy
     export https_proxy=$proxy
