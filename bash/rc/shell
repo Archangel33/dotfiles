@@ -95,11 +95,11 @@ ansi-test()
       }
 
 setproxy() {
-    echo -n "Proxy-Server:"
+    echo -n "Proxy-Server: "
     read -e proxyserver
-    echo -n "Proxy-Port:"
+    echo -n "Proxy-Port: "
     read -e proxyport
-    echo -n "Proxy username:"
+    echo -n "Proxy username: "
     read -e proxyusername
     if [ -z "$proxyusername" ]
     then
@@ -113,6 +113,8 @@ setproxy() {
     export https_proxy=$proxy
     export ftp_proxy=$proxy
     echo -e Set the Proxy environment variables for the current session. Logout to reset them to null again..
+    echo -e Updating /etc/apt/apt.conf
+    sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$proxy"'\2|gm' /etc/apt/apt.conf
 }
 
 export EDITOR=vim
