@@ -95,19 +95,24 @@ ansi-test()
       }
 
 setproxy() {
-    echo -n "Proxy-Server: "
-    read -e proxyserver
-    echo -n "Proxy-Port: "
-    read -e proxyport
-    echo -n "Proxy username: "
-    read -e proxyusername
+    # setup default values
+    defaultproxyhost="webproxy"
+    defaultproxyport="9090"
+    defaultproxyusername="$USER"
+
+    read -p "Proxy Hostname [$defaultproxyhost]: " -e proxyhost
+    : ${proxyhost:=$defaultproxyhost}
+    read -p "Proxy Port [$defaultproxyport]: "  -e proxyport
+    : ${proxyport:=$defaultproxyport}
+    read -p "Proxy username [$defaultproxyusername]: " -e proxyusername
+    : ${proxyusername:=$defaultproxyusername}
     if [ -z "$proxyusername" ]
     then
-        proxy=https://$proxyserver:$proxyport/
+        proxy=https://$proxyhost:$proxyport/
     else
         printf "Password: "
         read_secret proxypassword
-        proxy=https://$proxyusername:$proxypassword@$proxyserver:$proxyport/
+        proxy=https://$proxyusername:$proxypassword@$proxyhost:$proxyport/
     fi
     export http_proxy=$proxy
     export https_proxy=$proxy
