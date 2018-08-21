@@ -23,6 +23,24 @@ fi
 [ -e "$BASHCOLORS" ]    && source "$BASHCOLORS"
 [ -e "$PROMPTRC" ]      && source "$PROMPTRC"
 [ -e "$ALIASES" ]       && source "$ALIASES"
+
+
+source_files_in() {
+    local dir="$1"
+
+    if [[ -d "$dir" && -r "$dir" && -x "$dir"  ]]; then
+        for file in "$dir"/*; do
+           [[ -f "$file" && -r "$file"  ]] && . "$file"
+       done
+   fi
+
+}
+
+#{{{1 Source RC files
+DIRBashrc="$HOME/.bash/rc/"
+
+# need to figure out how to make sure files are sourced in order
+#source_files_in $DIRBashrc
 #}}}
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
