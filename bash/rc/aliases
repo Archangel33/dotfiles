@@ -27,6 +27,11 @@ LS_COMMON="$LS_COMMON -I Thumbs.db "
 # LS_COMMON="$LS_COMMON -I Desktop\*"
 alias ls="command ls $LS_COMMON" # Windows git bash
 
+# grep
+GREP_COMMON="--color=auto"
+alias grep="command grep $GREP_COMMON"
+
+
 alias mvnc="mvn-color" # Colorized maven
 
 # Vim related
