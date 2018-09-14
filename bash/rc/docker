@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PATH="$PATH:/mnt/c/Program\ Files/Docker/Docker/resources/bin"
+alias docker=docker.exe
+alias docker-compose=docker-compose.exe
+
+#export DOCKER_HOST=tcp://0.0.0.0:2375
+#export DOCKER_CERT_PATH=/mnt/c/Users/b88mjr/.docker/machine/certs
+#export DOCKER_TLS_VERIFY=1
