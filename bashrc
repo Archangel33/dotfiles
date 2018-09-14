@@ -16,7 +16,7 @@ fi
 [ -z "$ALIASES" ]       && ALIASES="$DIRBashrc/aliases"
 [ -z "$BASHCOLORS" ]    && BASHCOLORS="$DIRBashrc/colors"
 [ -z "$PROMPTRC" ]      && PROMPTRC="$DIRBashrc/prompt"
-[ -z "$RCSHELL" ]       && RCSHELL="$DIRBashrc/shell"
+[ -z "$RCSHELL" ]       && RCSHELL="$DIRBashrc/shell_env"
 #}}}
 #{{{1 source setup scripts
 [ -e "$RCSHELL" ]       && source "$RCSHELL"
