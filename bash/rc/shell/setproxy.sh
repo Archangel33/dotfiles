@@ -5,6 +5,9 @@
 # @see https://github.com/e36freak/tools/blob/master/options.bash
 
 # Preamble {{{
+# Dependencies
+# This script assumes you have the following programs pre-installed:
+# cat
 
 #set -o nounset
 
@@ -18,13 +21,14 @@ set -e
 quiet=0
 verbose=0
 interactive=0
-auth_required=1
+_auth_required=1
 args=()
-_proxyhost="webproxy"
+_proxyhostname="webproxy"
 _proxyport="9090"
 _proxyusername=$USER
 _proxypassword=""
-
+_proxyfiledefaultpath="~/.config/proxy/proxyenv.sh"
+_proxyfile=eval echo $_proxyfiledefaultpath > /dev/null
 # }}}
 # Helpers {{{
 
@@ -35,9 +39,9 @@ _ME=$(basename "${0}")
 out() {
   ((quiet)) && return
 
-  local message="$@"
+  local message="$*"
   if ((piped)); then
-    message=$(echo $message | sed '
+    message=$(echo "$message" | sed '
       s/\\[0-9]\{3\}\[[0-9]\(;[0-9]\{2\}\)\?m//g;
       s/✖/Error:/g;
       s/✔/Success:/g;
@@ -46,17 +50,17 @@ out() {
   printf '%b\n' "$message";
 }
 die() { out "$@"; exit 1; } >&2
-err() { out " \033[1;31m✖\033[0m  $@"; } >&2
-success() { out " \033[1;32m✔\033[0m  $@"; }
+err() { out " \033[1;31m✖\033[0m  $*"; } >&2
+success() { out " \033[1;32m✔\033[0m  $*"; }
 
 # Verbose logging
-log() { (($verbose)) && out "$@"; }
+log() { ((verbose)) && out "$@"; }
 
 # Notify on function success
-notify() { [[ $? == 0 ]] && success "$@" || err "$@"; }
+notify() { if [[ $? == 0 ]] ;then success "$@" else err "$@" ;fi }
 
 # Escape a string
-escape() { echo $@ | sed 's/\//\\\//g'; }
+escape() { echo "$@" | sed 's/\//\\\//g'; }
 
 
 # }}}
@@ -75,14 +79,16 @@ usage() {
   --dry-run         Run the script but don't actually change anything.
   -h, --help        Display this help and exit
   -H, --hostname    Hostname for the proxy
+  -i, --interactive Prompt for values
+  -o, --out         Output file for commands that should be sourced on bash
+                    startup. Default file: $_proxyfiledefaultpath
   -P, --port        Port number for proxy to use
-  -u, --username    Username for script
   -p, --password    Input user password, it's recommended to insert
                     this through the interactive option
       --no-auth     No authentication is required for proxy. The  default is to
                     always use authentication unless this flag is present.
-  -i, --interactive Prompt for values
   -q, --quiet       Quiet (no output)
+  -u, --username    Username for script
       --version     Output version information and exit
   -v, --verbose     Output more
 "
@@ -96,24 +102,25 @@ rollback() {
 # Put your script here
 main() {
     ${_proxy:-}
-    log "Using hostname: $_proxyhost"
+    log "Using hostname: $_proxyhostname"
     log "Using port: $_proxyport"
     log "Using Username: $_proxyusername"
-    if (($auth_required)); then
+    if ((_auth_required)); then
         if [ -z $_proxypassword ]; then
             die "Password is required! Try running $_ME -iy"
         fi
-        _proxy=https://$_proxyusername:$_proxypassword@$_proxyhost:$_proxyport/
+        _proxy=https://$_proxyusername:$_proxypassword@$_proxyhostname:$_proxyport/
     else
-        _proxy=https://$_proxyhost:$_proxyport/
+        _proxy=https://$_proxyhostname:$_proxyport/
     fi
 
-    log "Setting proxy environment variables..."
+    log "Writing proxy environment variables to $_proxyfile"
     if ! ((dryrun)); then
-        export http_proxy=$_proxy
-        export https_proxy=$_proxy
-        # export ftp_proxy=$_proxy
-        out "http_proxy settings set for this shell"
+        cat << EOF > $_proxyfile
+export http_proxy=$_proxy
+export https_proxy=$_proxy
+EOF
+        out "http_proxy settings written to $_proxyfile"
     else
         out "http_proxy settings would be set for this shell"
     fi
@@ -121,27 +128,54 @@ main() {
     if ! ((dryrun)); then
         # TODO: this should be an optional setting at somepoint
         log "Updating /etc/apt/apt.conf"
-        sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$proxy"'\2|gm' /etc/apt/apt.conf
+        sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$_proxy"'\2|gm' /etc/apt/apt.conf
     else
         out "Would set apt.conf"
     fi
+    out "add \". $_proxyfile\" to your shell's rc file to persist proxy settings"
+    out "Then restart your shell"
 }
 
 # }}}
 # Boilerplate {{{
 
+# Read secret string
+function read_secret() # Read user input as a secret
+{
+    printf "%s" "$1"; shift;
+    # Disable echo.
+    stty -echo
+
+    # Set up trap to ensure echo is enabled before exiting if the script
+    # is terminated while echo is disabled.
+    trap 'stty echo' EXIT
+
+    # Read secret.
+    read "$@"
+
+    # Enable echo.
+    stty echo
+    trap - EXIT
+
+    # Print a newline because the newline entered by the user after
+    # entering the passcode is not echoed. This ensures that the
+    # next line of output begins at a new line.
+    echo
+
+}
+
 # Prompt the user to interactively enter desired variable values.
 prompt_options() {
 
-  read -p "Proxy Hostname [$_proxyhost]: " -e input
-  : _proxyhost=${input:=$_proxyhost}
+  read -p "Proxy Hostname [$_proxyhostname]: " -e input
+  : _proxyhostname="${input:=$_proxyhostname}"
   read -p "Proxy Port [$_proxyport]: "  -e input
-  : _proxyport=${input:=$_proxyport}
+  : _proxyport="${input:=$_proxyport}"
 
-  if (($auth_required)); then
-    read -p "Proxy username [$defaultproxyusername]: " -e input
-    : _proxyusername=${input:=$_proxyusername}
-    read_secret _proxypassword
+  if ((_auth_required)); then
+    read -p "Proxy username [$_proxyusername]: " -e input
+    : _proxyusername="${input:=$_proxyusername}"
+    read_secret "Password: " _proxypassword
   fi
 
 }
@@ -202,12 +236,13 @@ while [[ $1 = -?* ]]; do
     --dry-run) dryrun=1 ;;
     --endopts) shift; break ;;
     -h|--help) usage >&2; safe_exit ;;
-    -H|--hostname) shift;_proxyhostname=$1 ;;
+    -H|--hostname) shift; _proxyhostname=$1 ;;
     -i|--interactive) interactive=1 ;;
+    -o) shift; _proxyfile=$1 ;;
     -P|--port) shift;_proxyport=$1 ;;
     --no-auth) _auth_required=0 ;;
     -p|--password) shift; _proxypassword=$1 ;;
-    -u|--username) shift;_proxyusername=$1 ;;
+    -u|--username) shift; _proxyusername=$1 ;;
     -v|--verbose) verbose=1 ;;
     --version) out "$_ME $version"; safe_exit ;;
     -q|--quiet) quiet=1 ;;
