@@ -1,128 +1,149 @@
 #!/usr/bin/env bash
 
 confirm () {
-    # call with a prompt string or use a default
-    read -r -t 5 -p "${1:-Are you sure? [y/N]} " response
-    case $response in
-        [yY][eE][sS]|[yY])
-            true
-            ;;
-        *)
-            false
-            ;;
-    esac
+	# call with a prompt string or use a default
+	read -r -t 5 -p "${1:-Are you sure? [y/N]} " response
+	case $response in
+		[yY][eE][sS]|[yY])
+			true
+			;;
+		*)
+			false
+			;;
+	esac
 }
 
 # Read secret string
 read_secret()
 {
-    # Disable echo.
-    stty -echo
+	# Disable echo.
+	stty -echo
 
-    # Set up trap to ensure echo is enabled before exiting if the script
-    # is terminated while echo is disabled.
-    trap 'stty echo' EXIT
+	# Set up trap to ensure echo is enabled before exiting if the script
+	# is terminated while echo is disabled.
+	trap 'stty echo' EXIT
 
-    # Read secret.
-    read "$@"
+	# Read secret.
+	read -rs "$@"
 
-    # Enable echo.
-    stty echo
-    trap - EXIT
+	# Enable echo.
+	stty echo
+	trap - EXIT
 
-    # Print a newline because the newline entered by the user after
-    # entering the passcode is not echoed. This ensures that the
-    # next line of output begins at a new line.
-    echo
+	# Print a newline because the newline entered by the user after
+	# entering the passcode is not echoed. This ensures that the
+	# next line of output begins at a new line.
+	echo
 
 }
 
 notify (){
-    notify_usage() { echo "notify [[-S SuccessStr] [-F FailString] [-A ActionStr]] Action" 1>&2; exit; }
+	notify_usage() { echo "notify [[-S SuccessStr] [-F FailString] [-A ActionStr]] Action" 1>&2; exit; }
 
-    local OPTIND o S F A
-    while getopts ":S:F:A:" o; do
-        case "${o}" in
-            S) # succes
-                SUCCESSstr="${OPTARG}"
-                ;;
-            F) # fail
-                FAILstr="${OPTARG}"
-                ;;
-            A) # action
-                ACTIONstr="${OPTARG}"
-                ;;
-        esac
-    done
-    shift $((OPTIND-1))
+	local OPTIND o S F A
+	while getopts ":S:F:A:" o; do
+		case "${o}" in
+			S) # succes
+				SUCCESSstr="${OPTARG}"
+				;;
+			F) # fail
+				FAILstr="${OPTARG}"
+				;;
+			A) # action
+				ACTIONstr="${OPTARG}"
+				;;
+		esac
+	done
+	shift $((OPTIND-1))
 
-    # print action string if provided
-    if [ ! -z "${ACTIONstr}" ]; then
-        printf "${ACTIONstr}"
-    fi
-    # do action
+	# print action string if provided
+	if [ ! -z "${ACTIONstr}" ]; then
+		printf "%s" "${ACTIONstr}"
+	fi
+	# do action
 
-    if [ "$@" -eq 0 ]; then
-        printf "${SUCCESSstr:-Success!}"
-    else
-        printf "${FAILstr:-Fail!}"
-    fi
+	if [ "$@" -eq 0 ]; then
+		printf "%s" "${SUCCESSstr:-Success!}"
+	else
+		printf "%s" "${FAILstr:-Fail!}"
+	fi
 
-    return 0
+	return 0
 }
 
 function whichTerm(){
-    basename "/"$(ps -f -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //')
-    return "$?"
+	basename "/"$(ps -f -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //')
+	return "$?"
 }
 
 ansi-test()
-      {
-      for a in 0 1 4 5 7; do
-              echo "a=$a "
-              for (( f=0; f<=9; f++ )) ; do
-                      for (( b=0; b<=9; b++ )) ; do
-                              #echo -ne "f=$f b=$b"
-                              echo -ne "\\033[${a};3${f};4${b}m"
-                              echo -ne "\\\\\\\\033[${a};3${f};4${b}m"
-                              echo -ne "\\033[0m "
-                      done
-              echo
-              done
-              echo
-      done
-      echo
-      }
-
-setproxy() {
-    # setup default values
-    defaultproxyhost="webproxy"
-    defaultproxyport="9090"
-    defaultproxyusername="$USER"
-
-    read -p "Proxy Hostname [$defaultproxyhost]: " -e proxyhost
-    : ${proxyhost:=$defaultproxyhost}
-    read -p "Proxy Port [$defaultproxyport]: "  -e proxyport
-    : ${proxyport:=$defaultproxyport}
-    read -p "Proxy username [$defaultproxyusername]: " -e proxyusername
-    : ${proxyusername:=$defaultproxyusername}
-    if [ -z "$proxyusername" ]
-    then
-        proxy=https://$proxyhost:$proxyport/
-    else
-        printf "Password: "
-        read_secret proxypassword
-        proxy=https://$proxyusername:$proxypassword@$proxyhost:$proxyport/
-    fi
-    export http_proxy=$proxy
-    export https_proxy=$proxy
-    export ftp_proxy=$proxy
-    echo -e Set the Proxy environment variables for the current session. Logout to reset them to null again..
-    echo -e Updating /etc/apt/apt.conf
-    sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$proxy"'\2|gm' /etc/apt/apt.conf
+{
+	for a in 0 1 4 5 7; do
+		echo "a=$a "
+		for (( f=0; f<=9; f++ )) ; do
+			for (( b=0; b<=9; b++ )) ; do
+				#echo -ne "f=$f b=$b"
+				echo -ne "\\033[${a};3${f};4${b}m"
+				echo -ne "\\\\\\\\033[${a};3${f};4${b}m"
+				echo -ne "\\033[0m "
+			done
+			echo
+		done
+		echo
+	done
+	echo
 }
 
-export EDITOR=vim
-export JAVA_HOME=/usr/lib/jvm/default-java
-export PATH=$PATH:$JAVA_HOME/bin
+
+urlencode() {
+	local string="${1}"
+	local strlen=${#string}
+	local encoded=""
+	local pos c o
+
+	for (( pos=0 ; pos<strlen ; pos++ )); do
+		c=${string:$pos:1}
+		case "$c" in
+			[-_.~a-zA-Z0-9] ) o="${c}" ;;
+			* )               printf -v o '%%%02x' "'$c"
+		esac
+		encoded+="${o}"
+	done
+	echo "${encoded}"    # You can either set a return variable (FASTER)
+	REPLY="${encoded}"   #+or echo the result (EASIER)... or both... :p
+}
+
+setproxy() {
+	# setup default values
+	defaultproxyhost="webproxy"
+	defaultproxyport="9090"
+	defaultproxyusername="$USER"
+
+	read -p "Proxy Hostname [$defaultproxyhost]: " -e proxyhost
+	: "${proxyhost:=$defaultproxyhost}"
+	read -p "Proxy Port [$defaultproxyport]: "  -e proxyport
+	: "${proxyport:=$defaultproxyport}"
+	read -p "Proxy username [$defaultproxyusername]: " -e proxyusername
+	: "${proxyusername:=$defaultproxyusername}"
+	if [ -z "$proxyusername" ]
+	then
+		proxy="https://$proxyhost:$proxyport/"
+	else
+		printf "Password: "
+		read_secret proxypassword
+		urlencode "$proxypassword" > /dev/null 2>&1
+		proxypassword="$REPLY"
+		proxy="https://$proxyusername:$proxypassword@$proxyhost:$proxyport/"
+	fi
+	export http_proxy="$proxy"
+	export https_proxy="$proxy"
+	export ftp_proxy="$proxy"
+	echo -e Set the Proxy environment variables for the current session. Logout to reset them to null again..
+	echo -e Updating /etc/apt/apt.conf
+	sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$proxy"'\2|gm' /etc/apt/apt.conf
+}
+
+	export EDITOR=vim
+	export JAVA_HOME=/usr/lib/jvm/default-java
+	export PATH=$PATH:$JAVA_HOME/bin
 
