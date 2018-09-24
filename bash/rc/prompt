@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-if [ "$USERDNSDOMAIN" != "JUDICIAL.LOCAL" ]; then
-    curl -k -o ~/.bash/.git-prompt.sh \
-        https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
-    source ~/.bash/.git-prompt.sh
-fi
+# TODO: This line should only run on initial setup of dot files not every bash load.
+curl -# -k -L -o ~/.bash/.git-prompt.sh \
+    https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+source ~/.bash/.git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUPSTREAM='verbose git'
 export GIT_PS1_SHOWSTASHSTATE=1
