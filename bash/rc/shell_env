@@ -133,14 +133,17 @@ setproxy() {
 		read_secret proxypassword
 		urlencode "$proxypassword" > /dev/null 2>&1
 		proxypassword="$REPLY"
-		proxy="https://$proxyusername:$proxypassword@$proxyhost:$proxyport/"
+		proxy="http://$proxyusername:$proxypassword@$proxyhost:$proxyport/"
 	fi
 	export http_proxy="$proxy"
 	export https_proxy="$proxy"
 	export ftp_proxy="$proxy"
 	echo -e Set the Proxy environment variables for the current session. Logout to reset them to null again..
-	echo -e Updating /etc/apt/apt.conf
-	sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$proxy"'\2|gm' /etc/apt/apt.conf
+
+	if [ -f /etc/apt/apt.conf ]; then
+		echo -e Updating /etc/apt/apt.conf
+		sudo sed -i -r 's|^(Acquire::https?::Proxy ")[^"]*(";)|\1'"$proxy"'\2|gm' /etc/apt/apt.conf
+	fi
 }
 
 	export EDITOR=vim
