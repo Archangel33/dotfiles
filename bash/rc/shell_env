@@ -109,8 +109,9 @@ urlencode() {
 		esac
 		encoded+="${o}"
 	done
-	echo "${encoded}"    # You can either set a return variable (FASTER)
-	REPLY="${encoded}"   #+or echo the result (EASIER)... or both... :p
+
+	RET="${encoded}"    # You can either set a return variable (FASTER)
+	echo "${encoded}"   #+or echo the result (EASIER)... or both.
 }
 
 setproxy() {
@@ -131,8 +132,7 @@ setproxy() {
 	else
 		printf "Password: "
 		read_secret proxypassword
-		urlencode "$proxypassword" > /dev/null 2>&1
-		proxypassword="$REPLY"
+		proxypassword=$(urlencode "$proxypassword")
 		proxy="http://$proxyusername:$proxypassword@$proxyhost:$proxyport/"
 	fi
 	export http_proxy="$proxy"
