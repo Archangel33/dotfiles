@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+#
+# Currently these files have an order to them, sort of. Need to look into what
+# order that is exactly and if there is a better way of "autoloading" them.
 
 #{{{1 Set up env
 if [ ! -z "$RCRELOAD" ]; then
@@ -11,19 +14,23 @@ if [ ! -z "$RCRELOAD" ]; then
         RCRELOAD
 fi
 #}}}
+
 #{{{1 Set up directories
 [ -z "$DIRBashrc" ]     && DIRBashrc="$HOME/.bash/rc"
 [ -z "$ALIASES" ]       && ALIASES="$DIRBashrc/aliases"
 [ -z "$BASHCOLORS" ]    && BASHCOLORS="$DIRBashrc/colors"
 [ -z "$PROMPTRC" ]      && PROMPTRC="$DIRBashrc/prompt"
 [ -z "$RCSHELL" ]       && RCSHELL="$DIRBashrc/shell_env"
+[ -z "$DOCKER" ]        && DOCKER="$DIRBashrc/docker"
 #}}}
 #{{{1 source setup scripts
+[ -e "$DIRBashrc/tmux" ] && source "$DIRBashrc/tmux" # don't waste time setting up stuff unless were in a tmux session
 [ -e "$RCSHELL" ]       && source "$RCSHELL"
 [ -e "$BASHCOLORS" ]    && source "$BASHCOLORS"
 [ -e "$PROMPTRC" ]      && source "$PROMPTRC"
 [ -e "$ALIASES" ]       && source "$ALIASES"
-
+[ -e "$DOCKER" ]       && source "$DOCKER"
+#}}}
 
 source_files_in() {
     local dir="$1"

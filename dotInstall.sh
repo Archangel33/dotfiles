@@ -201,6 +201,10 @@ setup_bash(){
     	source $1
 		status_msg msg "Sourcing $1"
     fi
+
+    curl -# -k -L -o ~/.bash/.git-prompt.sh \
+        https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+
 }
 
 add_to_path(){

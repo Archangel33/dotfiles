@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# TODO: This line should only run on initial setup of dot files not every bash load.
-curl -# -k -L -o ~/.bash/.git-prompt.sh \
-    https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
 source ~/.bash/.git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUPSTREAM='verbose git'
@@ -9,5 +6,27 @@ export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUNTRACKEDFILES=1
 export GIT_PS1_SHOWCOLORHINTS=1
 # export GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWUPSTREAM GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
-export PS1='\[\033]0;$MSYSTEM:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[0m\]\[\033[32m\]\u@\h \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1 " (%s)"`\[\033[0m\]\n\$ '
+
+case $HOSTNAME in
+    (localhost) sshclr=1;;
+    (dd-poc-rhel) sshclr=3;;
+esac
+
+__ssh_ps1 ()
+{
+    printf -- "${SSH_CLIENT+ssh}\033[0;$((32+sshclr))m"
+}
+
+__exit_ps1 ()
+{
+    local LAST="\$"
+    #if [ $EXIT != 0 ]; then
+    #    LAST="\033[0;31m\$\033[0;33m"
+    #else
+    #    LAST="\033[0m]\$"
+    #fi
+    printf -- "$LAST"
+}
+
+export PS1='\[\033]0;$MSYSTEM:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[0m\]\[\033[32m\]\u@\[`__ssh_ps1`\]\h\[\033[m\] \[\033[35m\]$MSYSTEM \[\033[33m\]\w\[\033[36m\]`__git_ps1 " (%s)"`\[\033[0m\]\n`__exit_ps1` '
 
