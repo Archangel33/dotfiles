@@ -78,7 +78,8 @@ let g:bundle_groups=[
             \ 'python',
             \ 'javascript',
             \ 'html',
-            \ 'misc'
+            \ 'misc',
+            \ 'snipmate',
             \ ]
 
 " General {
@@ -86,11 +87,12 @@ if count(g:bundle_groups, 'general')
     Bundle 'LargeFile'
     Bundle 'LogViewer'
     Bundle 'scrooloose/nerdtree'
+    Bundle 'Xuyuanp/nerdtree-git-plugin'
     Bundle 'altercation/vim-colors-solarized'
     Bundle 'spf13/vim-colors'
     Bundle 'tpope/vim-surround'
     Bundle 'tpope/vim-repeat'
-    "Bundle 'tpope/vim-unimpaired'
+    Bundle 'tpope/vim-unimpaired'
     Bundle 'rhysd/conflict-marker.vim'
     Bundle 'jiangmiao/auto-pairs'
     Bundle 'ctrlpvim/ctrlp.vim'
@@ -110,7 +112,7 @@ if count(g:bundle_groups, 'general')
     Bundle 'mbbill/undotree'
     Bundle 'nathanaelkane/vim-indent-guides'
     Bundle 'vim-scripts/restore_view.vim'
-    "Bundle 'mhinz/vim-signify'
+    Bundle 'mhinz/vim-signify'
     Bundle 'airblade/vim-gitgutter'
     Bundle 'tpope/vim-abolish.git'
     Bundle 'osyo-manga/vim-over'
@@ -118,6 +120,8 @@ if count(g:bundle_groups, 'general')
     Bundle 'kana/vim-textobj-indent'
     Bundle 'gcmt/wildfire.vim'
     Bundle 'vim-scripts/BufOnly.vim'
+    Bundle 'tmux-plugins/vim-tmux'
+    Bundle 'martinda/Jenkinsfile-vim-syntax'
 endif
 " }
 " Wiki {
