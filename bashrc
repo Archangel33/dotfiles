@@ -53,3 +53,8 @@ DIRBashrc="$HOME/.bash/rc/"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/b88mjr/.sdkman"
 [[ -s "/home/b88mjr/.sdkman/bin/sdkman-init.sh" ]] && source "/home/b88mjr/.sdkman/bin/sdkman-init.sh"
+# Install Ruby Gems to ~/gems
+export GEM_HOME="$HOME/gems"
+export PATH="$HOME/gems/bin:$PATH"
+export PATH="$HOME/.rbenv/bin:$PATH"
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi

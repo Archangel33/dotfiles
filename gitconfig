@@ -16,3 +16,5 @@
     unstage = reset HEAD --
     stage = add --
 [http]
+[credential]
+	helper = cache

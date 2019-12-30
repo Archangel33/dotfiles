@@ -669,7 +669,13 @@ if isdirectory(expand("~/.vim/bundle/nerdtree"))
     let NERDTreeMouseMode=2
     let NERDTreeShowHidden=1
     let NERDTreeKeepTreeInNewTab=1
+    let NERDTreeAutoDeleteBuffer=1
+    let NERDTreeDirArrows=1
     let g:nerdtree_tabs_open_on_gui_startup=0
+
+    "Close vim if nerd tree is the only remaining window
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
 endif
 " }}}
 
@@ -836,7 +842,7 @@ if isdirectory(expand("~/.vim/bundle/vim-airline/"))
     let g:airline_left_sep = ''
     let g:airline_right_sep = ''
     let g:airline_symbols_linenr = 'ln#' " U+2116
-    let g:airline_symbols_branch = '⎇' " U+2325 or U+2387
+    let g:airline_symbols_branch = '' " U+2325 or U+2387
 endif
 " }}}
 
@@ -844,17 +850,18 @@ endif
 if isdirectory(expand("~/.vim/bundle/vimwiki/"))
     let wiki_origin = {}
     let wiki_origin.path = '~/.vim/vimwikis/origin/'
-    let wiki_origin.maxhi = 0 " hilight broken wiki links
-    let wiki_origin.auto_export= 0 " auto export wiki file to html
-    let wiki_origin.diary_index = 'daily'
+    let wiki_origin.maxhi = 1 " hilight broken wiki links
+    let wiki_origin.auto_export= 1 " auto export wiki file to html
+    let wiki_origin.diary_index = 'index'
     let wiki_origin.auto_toc = 1
-    let wiki_origin.auto_tags = 0
-    let wiki_origin.syntax = 'default' " set wiki file syntax to default or markdown
-    let wiki_origin.custom_wiki2html = '' " wiki2html converter if syntax is not default
+    let wiki_origin.auto_tags = 1
+    let wiki_origin.syntax = 'markdown' " set wiki file syntax to default or markdown
+    "let wiki_origin.custom_wiki2html = '' " wiki2html converter if syntax is not default
     let wiki_origin.index = 'index'
-    let wiki_origin.diary_header = 'Daily'
-    let wiki_origin.ext = '.wiki'
-    let wiki_origin.diary_rel = 'daily/'
+    let wiki_origin.diary_header = 'Dailys'
+    let wiki_origin.ext = '.md'
+    let wiki_origin.diary_rel_path = 'dailys/'
+    let wiki_origin.list_margin  = 0
 
     let wiki_judicial = {}
     let wiki_judicial.path = '~/.vim/vimwikis/judicial/'
@@ -864,17 +871,32 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
     let wiki_judicial.diary_rel = 'daily/'
     let wiki_judicial.ext = '.md'
     let wiki_judicial.syntax = "markdown"
-    let wiki_judicial.custom_wiki2html = ''
     let wiki_judicial.auto_toc = 1
     let wiki_judicial.auto_tags = 0
-
+    let wiki_judicial.list_margin  = 0
 
     let g:vimwiki_list = [wiki_origin, wiki_judicial] " add all the wikis
     let g:vimwiki_ext2syntax = {} " make sure the scope of vimwiki ft is only wiki files
+    let g:vimwiki_table_mappings = 0
+
+ " autocommit and push on write when writing to a wiki
+function! AutoGitCommitPush()
+  call system('git rev-parse --git-dir > /dev/null 2>&1')
+  if v:shell_error
+    return
+  endif
+  let message = input('Message? ', 'Vimwiki Auto-commit + push: ' . expand('%'))
+  call system('git add ' . expand('%:p'))
+  call system('git commit -m ' . shellescape(message, 1))
+  call system('git push')
+endfun
+
 
     augroup vimwiki
-    au! BufRead ~/.vim/vimwikis/index.wiki !git pull
-    au! BufWritePost ~/.vim/vimwikis/* !git commit -am "VimWiki autosave";git push
+      au! BufReadPre ~/.vim/vimwikis/*/index.* call system('git pull')
+      "au! BufWritePost ~/.vim/vimwikis/origin/* !git commit -am "VimWiki auto commit and push.";git push
+
+      au! BufWritePost ~/.vim/vimwikis/origin/*.md call AutoGitCommitPush()
     augroup END
 
 " Note Taking {{{
@@ -1105,7 +1127,7 @@ function! s:EditConfig()
 endfunction
 
 " edit and save vimrc files
-noremap <leader>ev :call <SID>EditConfig()<CR>
+noremap <leader>ev :call <SID>EditConfig()<CR><C-W><C-H>
 noremap <leader>sv :source ~/.vimrc<CR>
 " }}} vimrc
 " }}} functions

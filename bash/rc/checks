@@ -9,6 +9,12 @@ case "$UNIX_NAME" in
   *) export IS_UNKNOWN=1;;
 esac
 
+if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
+    echo "Windows 10 Bash"
+else
+    echo "Anything else"
+fi
+
 hash npm 2>/dev/null && export HAS_NPM=1
 hash node 2>/dev/null && export HAS_NODE=1
 hash brew 2>/dev/null && export HAS_BREW=1
