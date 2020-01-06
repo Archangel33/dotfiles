@@ -129,7 +129,7 @@ if count(g:bundle_groups, 'wiki')
     Bundle 'vimwiki/vimwiki'
     Bundle 'itchyny/calendar.vim'
     Bundle 'farseer90718/vim-taskwarrior'
-    Bundle 'tbabej/taskwiki'
+    "Bundle 'tbabej/taskwiki'
 endif
 " }
 
