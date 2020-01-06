@@ -288,17 +288,6 @@ set list
 set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
 set encoding=utf8
-" set cursor to be a block
-set gcr=a:block
-" mode aware cursors
-set gcr+=o:hor50-Cursor
-set gcr+=n:Cursor
-set gcr+=i-ci-sm:InsertCursor
-set gcr+=r-cr:ReplaceCursor-hor20
-set gcr+=c:CommandCursor
-set gcr+=v-ve:VisualCursor
-set gcr+=a:blinkon0
-
 hi Cursor        ctermfg=15 guifg=#fdf6e3 ctermbg=2   guibg=#859900
 hi InsertCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=3   guibg=#b58900
 hi VisualCursor  ctermfg=15 guifg=#fdf6e3 ctermbg=5   guibg=#d33682
@@ -312,7 +301,7 @@ set cursorline                  " Highlight current line
 hi Normal ctermfg=12 ctermbg=0
 hi clear LineNr          " Current line number row will have same background color in relative mode
 hi clear CursorLineNr    " Remove highlight color from current line number
-hi CursorLine ctermbg=0
+hi CursorLine ctermbg=8
 
 " if compiled with colorcolumn
 if (exists('+colorcolumn'))
@@ -882,22 +871,23 @@ if isdirectory(expand("~/.vim/bundle/vimwiki/"))
 
  " autocommit and push on write when writing to a wiki
 function! AutoGitCommitPush()
-  call system('git rev-parse --git-dir > /dev/null 2>&1')
+  call system("git rev-parse --git-dir > /dev/null 2>&1")
   if v:shell_error
     return
   endif
   let message = input('Message? ', 'Vimwiki Auto-commit + push: ' . expand('%'))
-  call system('git add ' . expand('%:p'))
-  call system('git commit -m ' . shellescape(message, 1))
-  call system('git push')
+  call system("git add " . expand('%:p'))
+  call system("git commit -m " . shellescape(message, 1))
+  call system("git push")
 endfun
 
 
-    augroup vimwiki
-      au! BufReadPre ~/.vim/vimwikis/*/index.* call system('git pull')
+    augroup vimwiki-vimrc
+      au!
+      au BufReadPre *vim/vimwikis/* call system('git pull')
       "au! BufWritePost ~/.vim/vimwikis/origin/* !git commit -am "VimWiki auto commit and push.";git push
 
-      au! BufWritePost ~/.vim/vimwikis/origin/*.md call AutoGitCommitPush()
+      au BufWritePost *vim/vimwikis/origin/*.md call AutoGitCommitPush()
     augroup END
 
 " Note Taking {{{
@@ -931,6 +921,17 @@ if has('gui_running')
     elseif WINDOWS() && has("gui_running")
         set guifont=Sauce_Code_Powerline:h9:cANSI,Menlo:h10,Consolas:h10,Courier_New:h10
     endif
+
+    " mode aware cursors for gui only
+    set gcr=a:block " set cursor to be a block
+    set gcr+=o:hor50-Cursor
+    set gcr+=n:Cursor
+    set gcr+=i-ci-sm:InsertCursor
+    set gcr+=r-cr:ReplaceCursor-hor20
+    set gcr+=c:CommandCursor
+    set gcr+=v-ve:VisualCursor
+    set gcr+=a:blinkon0
+
 else
     if &term == 'xterm' || &term == 'screen'
         set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
