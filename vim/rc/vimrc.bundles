@@ -122,6 +122,7 @@ if count(g:bundle_groups, 'general')
     Bundle 'vim-scripts/BufOnly.vim'
     Bundle 'tmux-plugins/vim-tmux'
     Bundle 'martinda/Jenkinsfile-vim-syntax'
+    Bundle 'tibabit/vim-templates'
 endif
 " }
 " Wiki {
@@ -129,7 +130,7 @@ if count(g:bundle_groups, 'wiki')
     Bundle 'vimwiki/vimwiki'
     Bundle 'itchyny/calendar.vim'
     Bundle 'farseer90718/vim-taskwarrior'
-    Bundle 'tbabej/taskwiki'
+    "Bundle 'tbabej/taskwiki'
 endif
 " }
 
