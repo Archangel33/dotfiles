@@ -122,6 +122,7 @@ if count(g:bundle_groups, 'general')
     Bundle 'vim-scripts/BufOnly.vim'
     Bundle 'tmux-plugins/vim-tmux'
     Bundle 'martinda/Jenkinsfile-vim-syntax'
+    Bundle 'tibabit/vim-templates'
 endif
 " }
 " Wiki {
