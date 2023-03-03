@@ -61,3 +61,9 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 export GOPATH=/d/go
 
+
+export PATH=$PATH:/home/b88mjr/bin
+
+source '/home/b88mjr/lib/azure-cli/az.completion'
+
+complete -C /usr/bin/terraform terraform

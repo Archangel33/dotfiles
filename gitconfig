@@ -18,3 +18,8 @@
 [http]
 [credential]
 	helper = cache
+[http]
+	sslVerify = true
+	proxy = 
+[https]
+	proxy = 
